@@ -35,9 +35,13 @@
                 </div>
             </div>
         </div>
+        <hr >
+        <RepleList :repleList="repleList" />
     </div>
+    
 </template>
 <script setup>
+import RepleList from '../../components/body/RepleList.vue';
 import { ref, inject, onBeforeMount, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useUserStore } from '../../stores/user-store';
@@ -55,6 +59,7 @@ const favCount = ref(0);
 let isRegistFav = ref(false);
 let showRepleForm = ref(false);
 let repleContent = ref('');
+let repleList = ref([]);
 
 const date = new Date();
 const year = date.getFullYear();
@@ -71,6 +76,7 @@ async function getBoardDetail(){
     })
     .then(res => {
         boardDetail.value = res.data;
+        
     })
     .catch(error => console.log(error));
 }
@@ -170,6 +176,7 @@ function showRegistReple(event){
 
 // 금일 댓글 작성 개수 구하기
 async function getTodayRepleCount(){
+    console.log('금일 : ' + today);
     await axios.get('/api/reple/getTodayRepleCount', {
         params: {
             memberNum : getUserNum.value,
@@ -207,8 +214,23 @@ async function registReple(){
             repleContent.value = '';
             showRepleForm.value = false;
             addPointReple();
+            getRepleList();
         }else console.log('댓글 작성 오류');
     })
+    .catch(error => console.log(error));
+}
+
+// 댓글 목록 API
+async function getRepleList(){
+    await axios.get('/api/reple/getRepleList', {
+        params: {
+            boardNum : boardNum
+        }
+    })
+    .then(res => {
+        repleList.value = res.data;
+        console.log(repleList.value);
+    })  
     .catch(error => console.log(error));
 }
 
@@ -241,6 +263,7 @@ onMounted(() => {
     getMyFav();
     getFavCount();
     getTodayRepleCount();
+    getRepleList();
     
 });
 
@@ -302,7 +325,6 @@ onMounted(() => {
     margin-bottom: 30px;
 }
 .board-button-reple{
-    height: 30px;
     font-size: 20px;
     border-top: 1px solid #eee;
 }
@@ -337,5 +359,14 @@ onMounted(() => {
 .reple-write-check{
     margin-right: 20px;
 }
+
+hr{
+    width: 80%;
+    border: 0.5px solid #eee;
+}
+
+
+
+
 
 </style>
