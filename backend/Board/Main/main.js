@@ -4,7 +4,16 @@ const bodyParser = require('body-parser');
 router.use(bodyParser.json());
 
 router.get('/popularBoardList', (req, res) => {
-    maria.query(`SELECT *, COUNT(r.reple_num) AS reple_count, COUNT(f.fav_num) AS fav_count  FROM board b LEFT JOIN member m ON b.member_num = m.member_num LEFT JOIN fav f ON b.board_num = f.board_num LEFT JOIN reple r ON b.board_num = r.board_num GROUP BY b.board_num ORDER BY board_hit DESC `, (err, rows) => {
+    maria.query('SELECT ' + 
+    '*, ' +
+    'COUNT(r.reple_num) as reple_count , f.fav_count ' + 
+    'FROM board b ' + 
+    'LEFT JOIN member m ON b.member_num = m.member_num ' + 
+    'LEFT JOIN reple r on b.board_num = r.board_num ' +
+    'LEFT JOIN ' +
+    '(SELECT b.board_num, COUNT(f.fav_num) AS fav_count FROM board b LEFT JOIN fav f on b.board_num = f.board_num GROUP BY b.board_num) f ' + 
+    'ON b.board_num = f.board_num ' + 
+    'WHERE board_category = 1 GROUP BY b.board_num ORDER BY b.board_hit DESC', (err, rows) => {
         const boardVO = [];
         for(let row of rows){
             boardVO.push({

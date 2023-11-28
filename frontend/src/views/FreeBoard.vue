@@ -22,7 +22,7 @@
                         {{ board.memberName }}
                     </div>
                     <div class="board-elements">
-                        <span>🤍 {{ favList[i] }}</span>
+                        <span>🤍 {{ board.favCount }}</span>
                         <span>👁 {{ board.boardHit }}</span>
                         <span>🗨 {{ board.repleCount }}</span>
                     </div>
@@ -46,7 +46,7 @@ const freeBoardHeader = ref('자유 게시판');
 const router = new useRouter();
 
 let boardList = ref([]);
-let favList = ref();
+
 function getUserInfo(){
     user.value = localStorage.getItem('user');
 }
@@ -87,18 +87,9 @@ async function getFreeBoardList(){
     .catch(error => console.log(error));
 }
 
-async function getFreeBoardFavList(){
-    await axios.get('/api/board/freeBoardFavList')
-    .then(res => {
-        favList.value = res.data;
-        console.log(favList.value[0]);
-    })
-    .catch(error => console.log(error));
-}
 
 onMounted(() => {
     getUserInfo();
-    getFreeBoardFavList();
     getFreeBoardList();
     
 });

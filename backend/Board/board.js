@@ -25,7 +25,17 @@ router.post('/writeBoard', (req, res) => {
 
 router.get('/freeBoardList', (req, res) => {
     const boardVO = [];
-    maria.query('SELECT b.board_num, board_title, board_content, board_hit, board_category, b.member_num, board_regdate, board_mdate, m.member_name, board_regdate, COUNT(r.reple_num) AS reple_count FROM board b LEFT JOIN member M ON b.member_num = m.member_num LEFT JOIN reple r ON r.board_num = b.board_num WHERE board_category = 1 GROUP BY b.board_num ORDER BY b.board_regdate DESC', (err, rows) => {
+    maria.query(
+        'SELECT ' + 
+        'b.board_num, board_title, board_content, board_hit, board_category, b.member_num, board_regdate, board_mdate, m.member_name, board_regdate, ' +
+        'COUNT(r.reple_num) as reple_count , f.fav_count ' + 
+        'FROM board b ' + 
+        'LEFT JOIN member m ON b.member_num = m.member_num ' + 
+        'LEFT JOIN reple r on b.board_num = r.board_num ' +
+        'LEFT JOIN ' +
+        '(SELECT b.board_num, COUNT(f.fav_num) AS fav_count FROM board b LEFT JOIN fav f on b.board_num = f.board_num GROUP BY b.board_num) f ' + 
+        'ON b.board_num = f.board_num ' + 
+        'WHERE board_category = 1 GROUP BY b.board_num ORDER BY b.board_regdate DESC', (err, rows) => {
         if(!err){
             for(let row of rows){
                 boardVO.push({
@@ -38,11 +48,12 @@ router.get('/freeBoardList', (req, res) => {
                     memberName: row.member_name,
                     boardRegdate : row.board_regdate,
                     boardMdate : row.board_mdate,
-                    repleCount : row.reple_count
+                    repleCount : row.reple_count,
+                    favCount : row.fav_count
                 });
             }
             res.send(boardVO);
-        }
+        }else console.log(err);
     })
 });
 
@@ -64,18 +75,6 @@ router.get('/anonyBoardList', (req, res) => {
                 });
             }
             res.send(boardVO);
-        }
-    })
-});
-
-router.get('/freeBoardFavList', (req, res) => {
-    maria.query(`SELECT COUNT(f.fav_num) fav_count FROM board b LEFT JOIN fav f ON b.board_num = f.board_num WHERE b.board_category = 1 GROUP BY b.board_num ORDER BY b.board_regdate DESC`, (err, rows) => {
-        if(!err){
-            const favList = [];
-            for(let row of rows){
-                favList.push(row.fav_count);
-            }
-            res.send(favList);
         }
     })
 });
