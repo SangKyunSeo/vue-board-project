@@ -12,7 +12,7 @@ router.post('/writeReple', (req, res) => {
 });
 
 router.get('/getTodayRepleCount', (req, res) => {
-    maria.query(`SELECT COUNT(*) AS count FROM reple WHERE member_num = ${req.query.memberNum} AND DATE_FORMAT(reple_regdate, '%Y/%m/%d') = ${req.query.today}`, (err, rows) => {
+    maria.query(`SELECT COUNT(*) AS count FROM reple WHERE member_num = ${req.query.memberNum} AND DATE_FORMAT(reple_regdate, '%Y/%m/%d') = '${req.query.today}'`, (err, rows) => {
         if(!err){
             res.send(rows);
         }else console.log(err);

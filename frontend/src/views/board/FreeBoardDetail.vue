@@ -36,7 +36,7 @@
             </div>
         </div>
         <hr >
-        <RepleList :repleList="repleList" />
+        <RepleList v-if="repleList.length > 0" :repleList="repleList" />
     </div>
     
 </template>
