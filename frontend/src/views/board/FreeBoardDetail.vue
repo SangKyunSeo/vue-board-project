@@ -11,7 +11,7 @@
             </div>
             <div class="board-fav">
                 <span class="board-hit"> 조회수 {{ boardDetail.boardHit }} </span>
-                <span class="board-reple"> 댓글수 20 </span>
+                <span class="board-reple"> 댓글수 {{ repleTotalCount }}</span>
             </div>
             <div class="board-content">
                 {{ boardDetail.boardContent }}
@@ -23,7 +23,7 @@
                 <span v-if="isRegistFav" class="fav-button" @click="registFav">💗 {{ favCount }}</span>
             </div>
             <div class="board-button-reple">
-                <h5>댓글 20</h5>
+                <h5>댓글 {{ repleTotalCount }}</h5>
                 <button v-if="!showRepleForm" class="reple-button" @click="showRegistReple">댓글을 남겨주세요.</button>
                 <div v-else class="reple-write-section">
                     <textarea class="reple-write-content" id="repleContent" v-model="repleContent" maxlength="1000" ></textarea>
@@ -60,6 +60,7 @@ let isRegistFav = ref(false);
 let showRepleForm = ref(false);
 let repleContent = ref('');
 let repleList = ref([]);
+let repleTotalCount = ref(0);
 
 const date = new Date();
 const year = date.getFullYear();
@@ -215,6 +216,7 @@ async function registReple(){
             showRepleForm.value = false;
             addPointReple();
             getRepleList();
+            getRepleTotalCount();
         }else console.log('댓글 작성 오류');
     })
     .catch(error => console.log(error));
@@ -252,7 +254,19 @@ async function addPointReple(){
         }
     })
     .catch(error => console.log(error));
+}
 
+// 댓글 수 조회
+async function getRepleTotalCount(){
+    await axios.get('/api/reple/getRepleTotalCount',{
+        params: {
+            boardNum : boardNum
+        }
+    })
+    .then(res => {
+        repleTotalCount.value = res.data[0].count
+    })
+    .catch(error => console.log(error));
 }
 
 onBeforeMount(() => {
@@ -264,7 +278,7 @@ onMounted(() => {
     getFavCount();
     getTodayRepleCount();
     getRepleList();
-    
+    getRepleTotalCount();
 });
 
 

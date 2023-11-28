@@ -38,4 +38,12 @@ router.get('/getRepleList', (req, res) => {
     });
 });
 
+router.get('/getRepleTotalCount', (req, res) => {
+    maria.query(`SELECT COUNT(*) AS count FROM reple WHERE board_num = ${req.query.boardNum}`, (err, rows) => {
+        if(!err){
+            res.send(rows);
+        }else console.log(err);
+    })
+});
+
 module.exports = router;
