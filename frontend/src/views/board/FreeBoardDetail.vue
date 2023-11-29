@@ -12,6 +12,8 @@
             <div class="board-fav">
                 <span class="board-hit"> 조회수 {{ boardDetail.boardHit }} </span>
                 <span class="board-reple"> 댓글수 {{ repleTotalCount }}</span>
+                <button v-if="getUserNum === boardDetail.memberNum" class="board-update-button" @click="modalOpen">수정</button>
+                <button v-if="getUserNum === boardDetail.memberNum" class="board-delete-button">삭제</button>
             </div>
             <div class="board-content">
                 {{ boardDetail.boardContent }}
@@ -35,13 +37,15 @@
                 </div>
             </div>
         </div>
-        <hr >
+        <hr>
         <RepleList v-if="repleList.length > 0" :repleList="repleList" />
+        <BoardUpdateModal v-if="updateModalOpen" :boardDetail="boardDetail" @updateModalClose="modalClose" @updatedBoardDetail="updatedData"/>
     </div>
     
 </template>
 <script setup>
 import RepleList from '../../components/body/RepleList.vue';
+import BoardUpdateModal from '@/components/modal/BoardUpdateModal.vue';
 import { ref, inject, onBeforeMount, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useUserStore } from '../../stores/user-store';
@@ -61,6 +65,7 @@ let showRepleForm = ref(false);
 let repleContent = ref('');
 let repleList = ref([]);
 let repleTotalCount = ref(0);
+let updateModalOpen = ref(false);
 
 const date = new Date();
 const year = date.getFullYear();
@@ -70,7 +75,7 @@ const today = year + '/' + month + '/' + day;
 const todayRepleCount = ref(0);
 
 async function getBoardDetail(){
-    await axios.get('/api/board/freeBoardDetail',{
+    await axios.get('/api/board/boardDetail',{
         params: {
             boardNum : boardNum
         }
@@ -269,6 +274,23 @@ async function getRepleTotalCount(){
     .catch(error => console.log(error));
 }
 
+// 수정 모달창 띄우기
+function modalOpen(){
+    updateModalOpen.value = true;
+}
+
+// 수정 모달창 감추기
+const modalClose = (data) => {
+    if(data) updateModalOpen.value = false;
+}
+
+// 수정된 데이터 반영
+const updatedData = (data) => {
+    boardDetail.value.boardTitle = data.boardTitle;
+    boardDetail.value.boardContent = data.boardContent;
+}
+
+
 onBeforeMount(() => {
     getBoardDetail();
 });
@@ -379,8 +401,19 @@ hr{
     border: 0.5px solid #eee;
 }
 
-
-
-
+.board-update-button{
+    margin-left: auto;
+    margin-right: 10px;
+    background: none;
+    border: 1px solid #eee;
+    padding: 5px 13px;
+    cursor: pointer;
+}
+.board-delete-button{
+    background: none;
+    border: 1px solid #eee;
+    padding: 5px 13px;
+    cursor: pointer;
+}
 
 </style>

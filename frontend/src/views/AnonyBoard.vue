@@ -2,7 +2,7 @@
     <div class="anony-board-section">
         <MainBodyHeader :msg="anonyBoardHeader"/>
         <div v-if="boardList.length > 0" class="anony-board-article">
-            <div :key="i" v-for="(board, i) in boardList" class="article">
+            <div :key="i" v-for="(board, i) in boardList" class="article" @click="moveDetail(board.boardNum)">
                 <div class="board-header-section">
                     <div class="board-title">
                         {{ board.boardTitle }}
@@ -21,7 +21,6 @@
                     <div class="board-elements">
                         <span>🤍 0</span>
                         <span>👁 {{ board.boardHit }}</span>
-                        <span>🗨 0</span>
                     </div>
                 </div>
             </div>
@@ -34,10 +33,12 @@
 <script setup>
 import MainBodyHeader from '../components/header/MainBodyHeader.vue';
 import { onMounted, ref, inject } from 'vue';
+import { useRouter } from 'vue-router'
 
 const user = ref();
 const axios = inject('$axios');
 const anonyBoardHeader = ref('익명 게시판');
+const router = useRouter();
 
 let boardList = ref([]);
 
@@ -56,6 +57,26 @@ async function getAnonyBoardList(){
     .catch(error => console.log(error));
 }
 
+// 익명 게시판 상세페이지 이동 및 조회수 증가
+async function moveDetail(boardNum){
+    
+    router.push({path: '/anonyBoardDetail', query: {
+        boardNum:boardNum
+    }});
+
+    await axios.post('/api/board/addHit',{
+        boardNum: boardNum
+    },{
+        method : 'POST',
+        header : {'Content-Type' : 'application/json'}
+    })
+    .then(res => {
+        if(res.data) console.log('조회수 증가');
+        else console.log('조회수 증가 통신 오류');
+    })
+    .catch(error => console.log(error));
+}
+
 onMounted(() => {
     getUserInfo();
     getAnonyBoardList();
@@ -68,22 +89,15 @@ onMounted(() => {
 }
 
 .anony-board-article{
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    margin: -20px 10px 10px 10px;
+    width: 90%;
+    margin: 0px auto;
 }
 
 .article{
-    width: 30%;
     padding: 10px;
     border-bottom: 1px solid lightgray;
     cursor: pointer;
 }
-.article:not(:nth-child(3n)){
-    border-right: 1px solid lightgray;
-}
-
 .board-header-section{
     display: flex;
     height: 50px;

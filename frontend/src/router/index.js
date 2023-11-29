@@ -25,6 +25,11 @@ const routes = [
     path: '/freeBoardDetail',
     name: 'FreeBoardDetail',
     component: () => import(/* webpackChunkName: "about" */ '../views/board/FreeBoardDetail.vue')
+  },
+  {
+    path: '/anonyBoardDetail',
+    name: 'AnonyBoardDetail',
+    component: () => import(/* webpackChunkName: "about" */ '../views/board/AnonyBoardDetail.vue')
   }
 ]
   

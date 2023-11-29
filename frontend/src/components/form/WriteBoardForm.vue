@@ -3,7 +3,7 @@
         <form class="write-board-form" v-on:submit="write">
             <div class="title-section">
                 <label for="boardTitle">제목</label>
-                <input type="text" class="title-input" id="boardTitle" placeholder="제목을 작성해주세요(최대20자)" v-model="boardTitle">
+                <input type="text" class="title-input" id="boardTitle" placeholder="제목을 작성해주세요(최대20자)" v-model="boardTitle" maxlength="20">
             </div>
             <div class="category-section">
                 <label>카테고리</label>
@@ -14,7 +14,7 @@
             </div>
             <div class="content-section">
                 <label for="boardContent">내용</label>
-                <textarea class="content-input" id="boardContent" v-model=boardContent></textarea>
+                <textarea class="content-input" id="boardContent" v-model=boardContent maxlength="1000"></textarea>
             </div>
             <div class="form-button-section">
                 <button type="submit" id="submit">작성</button>

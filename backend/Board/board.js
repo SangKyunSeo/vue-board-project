@@ -59,7 +59,7 @@ router.get('/freeBoardList', (req, res) => {
 
 router.get('/anonyBoardList', (req, res) => {
     const boardVO = [];
-    maria.query(`SELECT board_num, board_title, board_content, board_hit, board_category, b.member_num, board_regdate, board_mdate, m.member_name, board_regdate FROM board b LEFT JOIN member M ON b.member_num = m.member_num WHERE board_category = 2 AND DATE_FORMAT(b.board_regdate,'%Y-%m-%d') = CURDATE() OR DATE_FORMAT(b.board_mdate,'%Y-%m-%d') = CURDATE() ORDER BY b.board_regdate DESC`, (err, rows) => {
+    maria.query(`SELECT b.board_num, board_title, board_content, board_hit, board_category, b.member_num, board_regdate, board_mdate, board_regdate, COUNT(r.reaction_num) AS reaction_count FROM board b LEFT JOIN reaction r ON b.board_num = r.board_num WHERE board_category = 2 AND DATE_FORMAT(b.board_regdate,'%Y-%m-%d') = CURDATE() OR DATE_FORMAT(b.board_mdate,'%Y-%m-%d') = CURDATE() GROUP BY b.board_num ORDER BY b.board_regdate DESC`, (err, rows) => {
         if(!err){
             for(let row of rows){
                 boardVO.push({
@@ -69,17 +69,16 @@ router.get('/anonyBoardList', (req, res) => {
                     boardHit : row.board_hit,
                     boardCategory : row.board_category,
                     memberNum : row.member_num,
-                    memberName: row.member_name,
                     boardRegdate : row.board_regdate,
                     boardMdate : row.board_mdate
                 });
             }
             res.send(boardVO);
-        }
+        }else console.log(err);
     })
 });
 
-router.get('/freeBoardDetail', (req, res) => {
+router.get('/boardDetail', (req, res) => {
     
     maria.query(`SELECT * FROM board b JOIN member m ON b.member_num = m.member_num WHERE board_num = ${req.query.boardNum}`, (err, rows) => {
         if(!err){
@@ -105,6 +104,14 @@ router.post('/addHit', (req, res) => {
         if(!err) res.send('true');
         else console.log(err);
     })
-})
+});
+
+router.post('/updateBoard', (req, res) => {
+    maria.query(`UPDATE board SET board_title = '${req.body.boardTitle}', board_content = '${req.body.boardContent}' WHERE board_num = ${req.body.boardNum}`, (err, rows) => {
+        if(!err) res.send(true);
+        else console.log(err);
+    });
+});
+
 
 module.exports = router;
