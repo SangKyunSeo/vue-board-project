@@ -43,7 +43,7 @@ const router = useRouter();
 let boardList = ref([]);
 
 function getUserInfo(){
-    user.value = localStorage.getItem('user');
+    user.value = JSON.parse(localStorage.getItem('user'));
 }
 
 async function getAnonyBoardList(){
@@ -59,7 +59,11 @@ async function getAnonyBoardList(){
 
 // 익명 게시판 상세페이지 이동 및 조회수 증가
 async function moveDetail(boardNum){
-    
+    if(user.value.memberNum === ''){
+        alert('로그인 후 확인할 수 있습니다.');
+        return;
+    }
+
     router.push({path: '/anonyBoardDetail', query: {
         boardNum:boardNum
     }});

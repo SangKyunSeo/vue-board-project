@@ -10,6 +10,7 @@ const fav = require('./Fav/fav');
 const attend = require('./attend/attend');
 const point = require('./point/point');
 const reple = require('./reple/reple');
+const reaction = require('./React/react');
 
 maria.connect();
 
@@ -22,6 +23,7 @@ app.use('/api/fav', fav);
 app.use('/api/attend', attend);
 app.use('/api/point', point);
 app.use('/api/reple', reple);
+app.use('/api/react', reaction);
 
 
 app.listen(3000, () => {
