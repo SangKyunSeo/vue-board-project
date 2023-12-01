@@ -1,36 +1,46 @@
 <template>
-    <div class="main-wrapper">
+    <div class="search-form-section">
         <section class="main-search-section">
-            <input type="search" placeholder="검색어를 입력하세요." class="search-input" v-model="searchWord">
+            <input type="search" placeholder="검색어를 입력하세요." class="search-input" v-model="inputWord">
             <button type="button" class="search-button" @click="search">검색</button>
         </section>
-        <MainBody />
-        
     </div>
 </template>
-
 <script setup>
-import MainBody from '../components/body/MainBody.vue'
-import { ref } from 'vue';
-import { useRouter } from 'vue-router'
+import { defineProps, inject, ref, onMounted } from 'vue'
 
-const router = new useRouter();
+const axios = inject('$axios');
+const props = defineProps({
+    searchWord : {
+        type : String
+    }
+});
 
-let searchWord = ref('');
+let inputWord = ref('');
 
-function search(){
-    router.push({path : '/search', query:{
-        searchWord : searchWord.value
-    }});
+// 게시물 검색 API
+async function search(){
+    await axios.post('/api/search/doSearch', {
+        word : inputWord.value
+    }, {
+        method : 'POST',
+        header : {'Content-Type' : 'application/json'}
+    })
+    .then(res => {
+        console.log(res);
+    })
+    .catch(error => console.log(error));
 }
+
+
+onMounted(() => {
+    inputWord.value = props.searchWord;
+    console.log(inputWord.value);
+});
 
 </script>
 
 <style scoped>
-.main-wrapper{
-    width:70%;
-}
-
 .main-search-section{
     position: relative;
 
@@ -65,7 +75,7 @@ function search(){
     width: 50%;
     height: 100%;
     content: '';
-    background: url('../assets/search.png') no-repeat;
+    background: url('../../assets/search.png') no-repeat;
     background-size: 100%;
     background-position: center;
 }

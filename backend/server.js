@@ -11,6 +11,7 @@ const attend = require('./attend/attend');
 const point = require('./point/point');
 const reple = require('./reple/reple');
 const reaction = require('./React/react');
+const search = require('./Search/search')
 
 maria.connect();
 
@@ -24,7 +25,7 @@ app.use('/api/attend', attend);
 app.use('/api/point', point);
 app.use('/api/reple', reple);
 app.use('/api/react', reaction);
-
+app.use('/api/search', search);
 
 app.listen(3000, () => {
     console.log('sever start');

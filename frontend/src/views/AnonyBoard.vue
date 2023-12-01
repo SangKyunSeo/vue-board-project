@@ -19,7 +19,7 @@
                 </div>
                 <div class="board-footer-section">
                     <div class="board-elements">
-                        <span>🤍 0</span>
+                        <span>⭐ {{ board.reactionTotal }}</span>
                         <span>👁 {{ board.boardHit }}</span>
                     </div>
                 </div>

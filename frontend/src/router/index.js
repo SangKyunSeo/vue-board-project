@@ -30,6 +30,11 @@ const routes = [
     path: '/anonyBoardDetail',
     name: 'AnonyBoardDetail',
     component: () => import(/* webpackChunkName: "about" */ '../views/board/AnonyBoardDetail.vue')
+  },
+  {
+    path: '/search',
+    name: 'SearchResult',
+    component: () => import(/* webpackChunkName: "about" */ '../views/search/SearchResult.vue')
   }
 ]
   

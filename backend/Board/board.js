@@ -70,7 +70,8 @@ router.get('/anonyBoardList', (req, res) => {
                     boardCategory : row.board_category,
                     memberNum : row.member_num,
                     boardRegdate : row.board_regdate,
-                    boardMdate : row.board_mdate
+                    boardMdate : row.board_mdate,
+                    reactionTotal : row.reaction_count
                 });
             }
             res.send(boardVO);
