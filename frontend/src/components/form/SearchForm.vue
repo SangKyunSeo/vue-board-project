@@ -7,31 +7,21 @@
     </div>
 </template>
 <script setup>
-import { defineProps, inject, ref, onMounted } from 'vue'
+import { defineProps, defineEmits , ref, onMounted } from 'vue'
 
-const axios = inject('$axios');
 const props = defineProps({
     searchWord : {
         type : String
     }
 });
+const emit = defineEmits(['inputWord']);
+
 
 let inputWord = ref('');
 
-// 게시물 검색 API
-async function search(){
-    await axios.post('/api/search/doSearch', {
-        word : inputWord.value
-    }, {
-        method : 'POST',
-        header : {'Content-Type' : 'application/json'}
-    })
-    .then(res => {
-        console.log(res);
-    })
-    .catch(error => console.log(error));
+function search(){
+    emit('inputWord', inputWord.value);
 }
-
 
 onMounted(() => {
     inputWord.value = props.searchWord;

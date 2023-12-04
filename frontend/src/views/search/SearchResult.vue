@@ -1,13 +1,15 @@
 <template>
     <div class="search-main-section">
-        <SearchForm v-if="searchWord" :searchWord="searchWord"/>
+        <SearchForm v-if="searchWord" :searchWord="searchWord" @inputWord="inputWordSearch"/>
         <MainBodyHeader :msg="msg"/>
         <div class="search-result-section">
             <div class="search-result-article">
-                <select v-model="searchCategory">
-                   <option value="free">자유</option> 
-                   <option value="anony">익명</option> 
-                </select>
+                <div class="select-section">
+                    <select v-model="searchCategory">
+                        <option value="free">자유</option> 
+                        <option value="anony">익명</option> 
+                    </select>
+                </div>
                 <div v-if="(searchCategory === 'free' && freeSearch.length === 0) || (searchCategory === 'anony' && anonySearch.length === 0)">
                     <h4> 검색한 결과가 없습니다. </h4>
                 </div>
@@ -35,11 +37,11 @@ const anonySearch = ref([]);
 let searchCategory = ref('free');
 
 // 검색 API
-async function getSearchResult(){
+async function getSearchResult(word){
     
     // 자유글 검색
     await axios.post('/api/search/getFreeSearch', {
-        word : searchWord,
+        word : word,
         boardCategory : 1
     },{
         method : 'POST',
@@ -53,7 +55,7 @@ async function getSearchResult(){
 
     // 익명글 검색
     await axios.post('/api/search/getAnonySearch', {
-        word: searchWord,
+        word: word,
         boardCategory : 2
     }, {
         method : 'POST',
@@ -66,15 +68,31 @@ async function getSearchResult(){
     .catch(console.log);
 }
 
+const inputWordSearch = (data) => {
+    msg.value = data + ' 검색 결과';
+    getSearchResult(data);
+}
 
 onMounted(() => {
     msg.value = searchWord + ' 검색 결과';
-    getSearchResult();
+    getSearchResult(searchWord);
 });
 
 </script>
 <style scoped>
 .search-main-section{
     width: 70%;
+}
+.search-result-article{
+    display: flex;
+    flex-wrap:wrap;
+}
+.select-section{
+    width: 100%;
+    text-align: left;
+    
+}
+.select-section select{
+    border: none;
 }
 </style>

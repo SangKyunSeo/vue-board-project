@@ -35,6 +35,11 @@ const routes = [
     path: '/search',
     name: 'SearchResult',
     component: () => import(/* webpackChunkName: "about" */ '../views/search/SearchResult.vue')
+  },
+  {
+    path: '/gameBoard',
+    name: 'GameBoard',
+    component: () => import(/* webpackChunkName: "about" */ '../views/board/GameBoardMain.vue')
   }
 ]
   

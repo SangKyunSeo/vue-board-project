@@ -3,6 +3,7 @@
         <ul class="category-list">
             <li><a id="free_board" @click="goFreeBoard">자유</a></li>
             <li><a id="anony_board" @click="goAnonyBoard">익명</a></li>
+            <li><a id="game_board" @click="goGameBoard">게임</a></li>
         </ul>
     </div>
 </template>
@@ -18,12 +19,21 @@ function goFreeBoard(){
     router.push('/freeBoard');
     document.getElementById('free_board').style.fontWeight = 'bold';
     document.getElementById('anony_board').style.fontWeight = '';
+    document.getElementById('game_board').style.fontWeight = '';
 }
 
 function goAnonyBoard(){
     router.push('/anonyBoard');
     document.getElementById('free_board').style.fontWeight = '';
     document.getElementById('anony_board').style.fontWeight = 'bold';
+    document.getElementById('game_board').style.fontWeight = '';
+}
+
+function goGameBoard(){
+    router.push('/gameBoard');
+    document.getElementById('free_board').style.fontWeight = '';
+    document.getElementById('anony_board').style.fontWeight = '';
+    document.getElementById('game_board').style.fontWeight = 'bold';
 }
 
 function checkCateState(){
@@ -33,15 +43,23 @@ function checkCateState(){
 const initHeaderStyle = () => {
     document.getElementById('free_board').style.fontWeight = '';
     document.getElementById('anony_board').style.fontWeight = '';
+    document.getElementById('game_board').style.fontWeight = '';
 }
 
 const currentFree = () => {
     document.getElementById('free_board').style.fontWeight = 'bold';
     document.getElementById('anony_board').style.fontWeight = '';
+    document.getElementById('game_board').style.fontWeight = '';
 }
 const currentAnony = () => {
     document.getElementById('free_board').style.fontWeight = '';
     document.getElementById('anony_board').style.fontWeight = 'bold';
+    document.getElementById('game_board').style.fontWeight = '';
+}
+const currentGame = () => {
+    document.getElementById('free_board').style.fontWeight = '';
+    document.getElementById('anony_board').style.fontWeight = '';
+    document.getElementById('game_board').style.fontWeight = 'bold';
 }
 
 defineExpose({
@@ -53,10 +71,11 @@ onMounted(() => {
         currentFree();
     }else if(checkCateState().includes('anonyBoard')){
         currentAnony();
+    }else if(checkCateState().includes('gameBoard')){
+        currentGame();
     }else{
         initHeaderStyle();
-    }
-
+    }   
 });
 
 </script>
@@ -80,6 +99,9 @@ onMounted(() => {
     cursor: pointer;
 }
 #anony_board{
+    cursor: pointer;
+}
+#game_board{
     cursor: pointer;
 }
 </style>
