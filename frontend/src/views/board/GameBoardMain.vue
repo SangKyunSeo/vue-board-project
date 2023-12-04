@@ -6,6 +6,17 @@
     <GameDetailModal v-if="gameModalOpen" :gameNum="gameNum" @gameModalOpen="close"/>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 게임 게시판 메인
+ *    - menu: 메인 > 게임 카테고리
+ *    - layout: GameBoard
+ *    - dev: 서상균
+ *    - devVersion : 01_20231204
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import MainBodyHeader from '@/components/header/MainBodyHeader.vue';
 import GameListBody from '@/components/body/GameListBody.vue';
 import { ref, inject, onMounted } from 'vue';
@@ -21,6 +32,7 @@ let gameList = ref([]);
 let gameModalOpen = ref(false);
 let gameNum = ref(-1);
 
+// 등록된 게임 리스트 조회 API
 async function getGameList(){
     axios.get('/api/game/getGameList')
     .then(res => {
@@ -30,6 +42,7 @@ async function getGameList(){
     .catch(error => console.log(error));
 }
 
+// 게임 리스트에서 게임 클릭 시 게임 상세 모달창 띄우기
 const goGameDetail = (data) => {
     if(getUserNum.value === '' || getUserNum.value === null){
         alert('로그인 후 사용가능!');
@@ -40,6 +53,7 @@ const goGameDetail = (data) => {
     }
 }
 
+// 게임 상세 모달창 닫기
 const close = (data) => {
     gameModalOpen.value = data;
 }

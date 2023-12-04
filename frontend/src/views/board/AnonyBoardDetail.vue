@@ -11,6 +11,16 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 익명 게시판 상세
+ *    - menu: 메인 > 익명 카테고리 > 익명 글 상세
+ *    - layout: AnonyBoardDetail
+ *    - dev: 서상균
+ *    - devVersion : 01_20231201
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
 import { inject, ref, onMounted, onBeforeMount } from 'vue'
 import { useUserStore } from '../../stores/user-store'
 import { storeToRefs } from 'pinia';

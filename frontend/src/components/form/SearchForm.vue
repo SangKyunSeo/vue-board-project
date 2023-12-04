@@ -7,6 +7,17 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 검색 결과 화면 검색 input 영역
+ *    - menu: 메인 > 검색 결과 > 검색창
+ *    - layout: SearchResult
+ *    - dev: 서상균
+ *    - devVersion : 01_20231201
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import { defineProps, defineEmits , ref, onMounted } from 'vue'
 
 const props = defineProps({
@@ -19,6 +30,7 @@ const emit = defineEmits(['inputWord']);
 
 let inputWord = ref('');
 
+// 검색어 전달
 function search(){
     emit('inputWord', inputWord.value);
 }

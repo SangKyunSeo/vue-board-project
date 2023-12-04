@@ -5,6 +5,18 @@
 </template>
 
 <script setup>
+/**
+ * @description
+ *    - title: body 헤더
+ *    - menu: 모든 페이지
+ *    - layout: Main
+ *    - dev: 서상균
+ *    - devVersion : 01_20231128
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ *    - nav, category Header를 제외한 부분의 Header
+ */
+
 import { defineProps } from 'vue';
 
 defineProps({

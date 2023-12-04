@@ -31,6 +31,16 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 익명 게시판
+ *    - menu: 메인 > 익명 카테고리
+ *    - layout: AnonyBoard
+ *    - dev: 서상균
+ *    - devVersion : 01_20231201
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
 import MainBodyHeader from '../components/header/MainBodyHeader.vue';
 import { onMounted, ref, inject } from 'vue';
 import { useRouter } from 'vue-router'
@@ -42,10 +52,12 @@ const router = useRouter();
 
 let boardList = ref([]);
 
+// 익명 글 상세페이지로 이동하기 위한 로그인한 사용자 정보 조회
 function getUserInfo(){
     user.value = JSON.parse(localStorage.getItem('user'));
 }
 
+// 익명 글 리스트 조회 API
 async function getAnonyBoardList(){
     await axios.get('/api/board/anonyBoardList')
     .then(res => {

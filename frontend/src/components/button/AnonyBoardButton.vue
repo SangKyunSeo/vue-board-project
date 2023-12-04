@@ -8,6 +8,17 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 익명글 반응 버튼
+ *    - menu: 메인 > 익명 카테고리 > 익명글 상세
+ *    - layout: AnonyBoardDetail
+ *    - dev: 서상균
+ *    - devVersion : 01_20231201
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import { defineEmits, defineProps, onMounted, defineExpose } from 'vue';
 
 const emoji = ['🤩','😀','😫','😥','😤'];
@@ -27,6 +38,7 @@ const props = defineProps({
     }
 });
 
+// 반응 클릭시 해당 반응 타입 전달
 function setReaction(type){
     console.log(Object.keys(props.myReact).length + ', ' + type);
     if(props.myReact.reactionType === type){

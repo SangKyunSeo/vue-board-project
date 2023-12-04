@@ -9,6 +9,17 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 게임 상세 모달
+ *    - menu: 메인 > 게임 카테고리 > 게임 상세 > 게임 진행 모달
+ *    - layout: GameDetail
+ *    - dev: 서상균
+ *    - devVersion : 01_20231204
+ *    - rework: 진행중
+ *    - uxWriting: 진행중
+ */
+
 import { defineProps, defineEmits } from 'vue';
 
 defineProps({
@@ -19,6 +30,7 @@ defineProps({
 
 const emit = defineEmits(['gameModalOpen']);
 
+// 취소 버튼 클릭 시 모달창 숨기기
 function close(){
     emit('gameModalOpen', false);
 }

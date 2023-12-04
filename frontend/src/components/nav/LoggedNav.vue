@@ -22,6 +22,17 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 로그인 한 이후 네비게이션
+ *    - menu: 메인 > 로그인 후 > 
+ *    - layout: Main
+ *    - dev: 서상균
+ *    - devVersion : 01_20231128
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import { defineProps, defineEmits, defineExpose, onMounted, inject, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '../../stores/user-store';
@@ -46,11 +57,14 @@ const props = defineProps({
 
 
 const emit = defineEmits(['logout']);
+
+// 로그아웃 버튼 클릭 시 데이터 전달 및 URI 이동
 function logout(){
     emit('logout', true);
     router.push('/');
 }
 
+// 내가 쓴 글 개수 조회 API
 async function getMyBoardCount(){
     const memberNum = props.user.memberNum;
     await axios.get('/api/main/myBoardCount', {
@@ -65,6 +79,7 @@ async function getMyBoardCount(){
     .catch(error => console.log(error));
 }
 
+// Store에 내 현재 포인트 저장 API
 async function setMyPointForStore(){
     const memberNum = props.user.memberNum;
     await axios.get('/api/main/getMyPoint',{
@@ -79,6 +94,7 @@ async function setMyPointForStore(){
     .catch(error => console.log(error));
 }
 
+// Store에 저장된 내 포인트 조회
 function getMyPoint(){
     myPoint.value = getUserPoint.value;
     return getUserPoint.value;

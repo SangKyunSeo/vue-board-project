@@ -21,6 +21,17 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 게시글 수정
+ *    - menu: 메인 > 자유, 익명 카테고리 > 본인 글 상세 > 글 수정
+ *    - layout: BoardDetail
+ *    - dev: 서상균
+ *    - devVersion : 01_20231129
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import { defineProps, defineEmits, onMounted, ref, inject } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useUserStore } from '../../stores/user-store'
@@ -41,18 +52,22 @@ const props = defineProps({
     }
 });
 
+// 제목 가져오기
 function getTitle(){
     boardTitle.value = props.boardDetail.boardTitle;
 }
 
+// 내용 가져오기
 function getContent(){
     boardContent.value = props.boardDetail.boardContent;
 }
 
+// 취소 버튼 클릭 시 데이터 전달
 function updateCancel(){
     emit('updateModalClose', true);
 }
 
+// 수정 버튼 클릭 시 데이터 수정
 function updateBoard(event){
     event.preventDefault();
 
@@ -112,8 +127,6 @@ onMounted(() => {
 
 
 </script>
-
-
 
 <style scoped>
 .board-update-modal-section{

@@ -16,6 +16,17 @@
 </template>
 
 <script setup>
+/**
+ * @description
+ *    - title: 로그인 모달
+ *    - menu: 메인 > 로그인 버튼 > 
+ *    - layout: LoginModal
+ *    - dev: 서상균
+ *    - devVersion : 01_20231128
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import LoginTitle from '../title/LoginTitle.vue'
 import { defineEmits } from 'vue';
 import { ref, inject } from 'vue';
@@ -30,10 +41,12 @@ const {getUserName, getUserNum, getUserAuth, getUserRegdate} = storeToRefs(store
 let userId = ref('');
 let userPw = ref('');
 
+// 로그인 모달창 닫기 시 데이터 전달
 function close(){
     emit('loginModalCheck', false);
 }
 
+// 로그인 버튼 클릭 시 로그인 진행 API
 async function login(){
     if(userId.value === '') {
         alert('아이디를 입력하세요!');
@@ -67,6 +80,7 @@ async function login(){
     .catch(error => console.log(error));
 }
 
+// 회원가입 버튼 클릭 시 데이터 전달
 function registerForm(){
     emit('registerCheck', true);
 }

@@ -6,6 +6,16 @@
 </template>
 
 <script setup>
+/**
+ * @description
+ *    - title: 게시글 작성
+ *    - menu: 메인 > 글쓰기
+ *    - layout: WriteBoard
+ *    - dev: 서상균
+ *    - devVersion : 01_20231128
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
 import WriteBoardForm from '../components/form/WriteBoardForm.vue';
 </script>
 <style scoped>

@@ -13,6 +13,17 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: Game 리스트 영역
+ *    - menu: 메인 > 게임 카테고리 > 게임 리스트 노출
+ *    - layout: GameBoardMain
+ *    - dev: 서상균
+ *    - devVersion : 01_20231204
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import { defineProps, defineEmits } from 'vue';
 
 const emit = defineEmits(['gameNum']);

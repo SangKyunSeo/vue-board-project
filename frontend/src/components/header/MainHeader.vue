@@ -12,6 +12,17 @@
 
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 메인화면 헤더
+ *    - menu: 메인 
+ *    - layout: Main
+ *    - dev: 서상균
+ *    - devVersion : 01_20231128
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import TitleHeader from './TitleHeader.vue';
 import CategoryHeader from './CategoryHeader.vue';
 import { defineProps, ref, defineEmits } from 'vue';
@@ -31,6 +42,7 @@ const store = useUserStore();
 const {getUserAttend, getUserPoint} = storeToRefs(store);
 const emit = defineEmits(['pointUpdated']);
 
+// 글쓰기 버튼 클릭 시
 function writeBoard(){
     if(props.user === null || props.user.memberNum === ''){
         alert('로그인 후 글을 작성하세요');
@@ -45,6 +57,7 @@ function writeBoard(){
     }
 }
 
+// Title Header 클릭 시
 const moveHome = (data) => {
     if(data){
         initHeaderStyle.value.initHeaderStyle();
@@ -52,6 +65,7 @@ const moveHome = (data) => {
     }
 }
 
+// 출석 버튼 클릭 시 출석 포인트 제공 API
 async function setAttendPoint(){
     await axios.post('/api/point/setAttendPoint', {
         memberNum : props.user.memberNum,
@@ -73,6 +87,7 @@ async function setAttendPoint(){
     })
 }
 
+// 출석 버튼 클릭 시 금일 출석 내용 삽입 API
 async function todayAttend(){
 
     await axios.post('/api/attend/setAttend', {

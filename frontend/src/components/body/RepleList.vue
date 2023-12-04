@@ -26,6 +26,17 @@
     </template>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 자유글 댓글 리스트 노출
+ *    - menu: 메인 > 자유 카테고리 > 자유글 상세 > 해당 자유글 관련 댓글 리스트 
+ *    - layout: FreeBoardDetail
+ *    - dev: 서상균
+ *    - devVersion : 01_20231128
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import { defineProps, onMounted, ref } from 'vue';
 
 const contentCount = ref(5);

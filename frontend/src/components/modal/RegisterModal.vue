@@ -28,6 +28,17 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 회원가입 모달
+ *    - menu: 메인 > 로그인 > 회원가입
+ *    - layout: RegisterModal
+ *    - dev: 서상균
+ *    - devVersion : 01_20231128
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import RegisterTitle from '../title/RegisterTitle.vue'
 import { defineEmits } from 'vue'
 import { ref, inject } from 'vue';
@@ -42,14 +53,17 @@ let userPwCheck = ref('');
 let radioValue = ref('');
 let duplicateCheck = ref(0);
 
+// 회원가입 모달창 닫기 시 데이터 전달
 function close(){
     emit('registerModalCheck', false);
 }
 
+// 아이디 중복 시 중복 상태 변경
 function duplicateCheckInit(){
     duplicateCheck.value = 0;
 }
 
+// 아이디 중복 체크 API
 async function checkDuplicate(){
     if(userId.value === ''){
         alert('ID를 입력하세요');
@@ -73,6 +87,7 @@ async function checkDuplicate(){
     });
 }
 
+// 회원가입 버튼 클릭 시
 async function register(){
     if(userName.value === ''){
         alert('닉네임을 입력하세요');

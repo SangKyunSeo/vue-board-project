@@ -10,6 +10,17 @@
 </template>
 
 <script setup>
+/**
+ * @description
+ *    - title: 메인
+ *    - menu: 메인
+ *    - layout: main
+ *    - dev: 서상균
+ *    - devVersion : 01_20231128
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import MainBody from '../components/body/MainBody.vue'
 import { ref } from 'vue';
 import { useRouter } from 'vue-router'
@@ -18,6 +29,7 @@ const router = new useRouter();
 
 let searchWord = ref('');
 
+// 메인 화면에서 검색 시 검색 화면으로 이동
 function search(){
     router.push({path : '/search', query:{
         searchWord : searchWord.value

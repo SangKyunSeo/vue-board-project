@@ -25,6 +25,17 @@
 </template>
 
 <script setup>
+/**
+ * @description
+ *    - title: 글작성 폼
+ *    - menu: 메인 > 글쓰기
+ *    - layout: WriteBoardForm
+ *    - dev: 서상균
+ *    - devVersion : 01_20231128
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import { inject, ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user-store';
@@ -39,6 +50,7 @@ const route = new useRoute();
 const store = useUserStore();
 const { getUserPoint } = storeToRefs(store);
 
+// 글작성 API
 async function write(e){
     e.preventDefault();    
     if(boardCategory.value === ''){
@@ -81,6 +93,7 @@ async function write(e){
     .catch(error => console.log(error));
 }
 
+// 자유글 작성시 포인트 차감
 async function usePointForFree(){
     await axios.post('/api/point/useFreeBoard',{
         memberNum : route.query.memberNum,
@@ -102,6 +115,7 @@ async function usePointForFree(){
     .catch(error => console.log(error));
 }
 
+// 익명글 작성시 포인트 차감
 async function usePointForAnony(){
     await axios.post('/api/point/useAnonyBoard',{
         memberNum : route.query.memberNum,

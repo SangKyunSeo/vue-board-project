@@ -36,6 +36,16 @@
 </template>
 
 <script setup>
+/**
+ * @description
+ *    - title: 자유 게시판
+ *    - menu: 메인 > 자유 카테고리
+ *    - layout: FreeBoard
+ *    - dev: 서상균
+ *    - devVersion : 01_20231129
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
 import { onMounted, ref, inject } from 'vue';
 import MainBodyHeader from '../components/header/MainBodyHeader.vue'
 import { useRouter } from 'vue-router';
@@ -47,10 +57,12 @@ const router = new useRouter();
 
 let boardList = ref([]);
 
+// 자유 게시글 상세페이지로 이동하기 위한 로그인한 사용자 정보 조회
 function getUserInfo(){
     user.value = localStorage.getItem('user');
 }
 
+// 자유 게시글 상세페이지 이동 및 조회수 증가
 async function moveDetail(boardNum){
     
     try{
@@ -76,6 +88,7 @@ async function moveDetail(boardNum){
     
 }
 
+// 자유 게시글 리스트 조회 API
 async function getFreeBoardList(){
     await axios.get('/api/board/freeBoardList')
     .then(res => {

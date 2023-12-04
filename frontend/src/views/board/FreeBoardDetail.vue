@@ -44,6 +44,17 @@
     
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 자유 게시판 상세
+ *    - menu: 메인 > 자유 카테고리 > 자유 글 상세
+ *    - layout: FreeBoardDetail
+ *    - dev: 서상균
+ *    - devVersion : 01_20231129
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import RepleList from '../../components/body/RepleList.vue';
 import BoardUpdateModal from '@/components/modal/BoardUpdateModal.vue';
 import { ref, inject, onBeforeMount, onMounted } from 'vue';
@@ -74,6 +85,7 @@ const day = date.getDate < 10 ? '0' + date.getDate() : date.getDate();
 const today = year + '/' + month + '/' + day; 
 const todayRepleCount = ref(0);
 
+// 자유글 조회 API
 async function getBoardDetail(){
     await axios.get('/api/board/boardDetail',{
         params: {

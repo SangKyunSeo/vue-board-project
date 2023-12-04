@@ -8,9 +8,21 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 로그인 전 네비게이션
+ *    - menu: 메인 > 로그인 전
+ *    - layout: Main
+ *    - dev: 서상균
+ *    - devVersion : 01_20231128
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
 import { defineEmits } from 'vue';
 
 const emit = defineEmits(['loginModalCheck']);
+
+// 로그인 버튼 클릭 시 로그인 모달창 Open 상태임을 전달
 function loginModalOpen(){
     emit('loginModalCheck', true);
 }

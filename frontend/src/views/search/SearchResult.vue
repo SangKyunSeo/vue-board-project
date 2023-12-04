@@ -20,6 +20,17 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 검색 결과 메인
+ *    - menu: 메인 > 검색 > 검색 결과
+ *    - layout: SearchResult
+ *    - dev: 서상균
+ *    - devVersion : 01_20231204
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import { useRoute } from 'vue-router';
 import { ref, onMounted, inject } from 'vue';
 import MainBodyHeader from '../../components/header/MainBodyHeader.vue';
@@ -68,6 +79,7 @@ async function getSearchResult(word){
     .catch(console.log);
 }
 
+// 검색 결과 화면에 띄우는 메시지
 const inputWordSearch = (data) => {
     msg.value = data + ' 검색 결과';
     getSearchResult(data);

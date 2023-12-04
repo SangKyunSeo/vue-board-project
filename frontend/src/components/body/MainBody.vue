@@ -19,6 +19,17 @@
 </template>
 
 <script setup>
+/**
+ * @description
+ *    - title: 메인화면 게시글 노출
+ *    - menu: 메인 > 게시글 리스트 노출 (조회순)
+ *    - layout: Main
+ *    - dev: 서상균
+ *    - devVersion : 01_20231128
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import MainBodyHeader from '../header/MainBodyHeader.vue';
 import { ref, inject, onMounted } from 'vue';
 

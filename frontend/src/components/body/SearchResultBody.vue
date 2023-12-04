@@ -18,6 +18,17 @@
 </template>
 
 <script setup>
+/**
+ * @description
+ *    - title: 검색 결과 화면
+ *    - menu: 메인 > 검색 > 검색 결과 
+ *    - layout: SearchResult
+ *    - dev: 서상균
+ *    - devVersion : 01_20231204
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import { defineProps, inject } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user-store';
