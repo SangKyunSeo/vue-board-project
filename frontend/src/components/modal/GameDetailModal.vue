@@ -2,8 +2,11 @@
     <div class="game-detail-modal">
         <div class="game-detail-modal-content">
             <div class="game-detail-modal-body">
-                {{ gameNum }}
-                <button @click="close">닫기</button>
+                <div class="game-detail-modal-head">
+                    <span class="game-title">{{ gameDetail.gameTitle }}</span>
+                    <button @click="close">닫기</button>    
+                </div>
+                <BaseBallGameBody v-if="gameDetail.gameNum === 1" :gameNum="gameDetail.gameNum"/>
             </div>
         </div>
     </div>
@@ -21,10 +24,10 @@
  */
 
 import { defineProps, defineEmits } from 'vue';
-
+import BaseBallGameBody from '../body/BaseBallGameBody.vue'
 defineProps({
-    gameNum : {
-        type : Number
+    gameDetail : {
+        type : Object
     }
 });
 
@@ -50,10 +53,26 @@ function close(){
 }
 .game-detail-modal-body{
     width: 500px;
-    height: 300px;
-    padding: 30px 30px;
+    height: 400px;
+    padding: 20px;
     margin: 0 auto;
     border: 1px solid #777;
     background-color: #fff;
+}
+.game-detail-modal-head{
+    display : flex;
+    justify-content: space-between;
+    border-bottom : 1px solid black;
+    
+}
+.game-detail-modal-head button{
+    cursor: pointer;
+    background: none;
+    border : none;
+    font-size: 15px;
+}
+.game-detail-modal-head span{
+    font-weight: bold;
+    font-size : 20px;
 }
 </style>

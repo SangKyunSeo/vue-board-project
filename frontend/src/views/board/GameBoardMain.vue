@@ -3,7 +3,7 @@
         <MainBodyHeader :msg="gameBoardHeader"/>
         <GameListBody v-if="gameList.length > 0" @gameNum="goGameDetail" :gameList="gameList"/>
     </div>
-    <GameDetailModal v-if="gameModalOpen" :gameNum="gameNum" @gameModalOpen="close"/>
+    <GameDetailModal v-if="gameModalOpen && Object.keys(gameDetail).length > 0" :gameDetail="gameDetail" @gameModalOpen="close"/>
 </template>
 <script setup>
 /**
@@ -31,6 +31,7 @@ const gameBoardHeader = ref('게임');
 let gameList = ref([]);
 let gameModalOpen = ref(false);
 let gameNum = ref(-1);
+const gameDetail = ref({});
 
 // 등록된 게임 리스트 조회 API
 async function getGameList(){
@@ -50,13 +51,30 @@ const goGameDetail = (data) => {
     }else{
         gameModalOpen.value = window.confirm('게임에 참가하시겠습니까? (포인트가 차감됩니다.)');
         gameNum.value = data;
+        // 게임 상세 조회
+        getGameDetail(gameNum.value);
     }
+}
+
+// 게임 상세 조회 API
+async function getGameDetail(gameNum){
+    axios.get('/api/game/getGameDetail', {
+        params : {
+            gameNum : gameNum
+        }
+    })
+    .then(res => {
+        gameDetail.value = res.data;
+        console.log(gameDetail.value);
+    })
+    .catch(error => console.log(error));
 }
 
 // 게임 상세 모달창 닫기
 const close = (data) => {
     gameModalOpen.value = data;
 }
+
 
 onMounted(() => {
     getGameList();
