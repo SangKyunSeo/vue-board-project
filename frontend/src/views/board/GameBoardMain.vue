@@ -25,7 +25,7 @@ import { storeToRefs } from 'pinia';
 import GameDetailModal from '../../components/modal/GameDetailModal.vue'
 
 const store = useUserStore();
-const { getUserNum } = storeToRefs(store);
+const { getUserNum, getUserPoint } = storeToRefs(store);
 const axios = inject('$axios');
 const gameBoardHeader = ref('게임');
 let gameList = ref([]);
@@ -49,11 +49,55 @@ const goGameDetail = (data) => {
         alert('로그인 후 사용가능!');
         return;
     }else{
-        gameModalOpen.value = window.confirm('게임에 참가하시겠습니까? (포인트가 차감됩니다.)');
-        gameNum.value = data;
-        // 게임 상세 조회
-        getGameDetail(gameNum.value);
+        if(checkPoint()){
+            gameModalOpen.value = window.confirm('게임에 참가하시겠습니까? (포인트가 차감됩니다.)');
+            gameNum.value = data;
+            // 게임 상세 조회
+            getGameDetail(gameNum.value);
+            // 포인트 차감
+            if(gameNum.value === 1){
+                calPoint(gameNum.value, 100);
+            }
+        }else{
+            alert('포인트가 부족하여 게임에 참여할 수 없습니다.');
+            return;
+        }
     }
+}
+
+// 게임 참가 여부 확인
+function checkPoint(){
+    if(Number(getUserPoint.value) > 100){
+        return true
+    }
+    return false;
+}
+
+// 게임 참가 포인트 차감
+async function calPoint(gameNum, gamePoint){
+    // store에 반영
+    store.setUserPoint(Number(getUserPoint.value) - gamePoint);
+    // 로컬스토리지에 바로 반영
+    localStorage.setItem('memberPoint', Number(getUserPoint.value));
+    // DB 반영
+    await axios.post('/api/game/setGamePoint',{
+        memberNum : getUserNum.value,
+        gameNum : gameNum,
+        gamePoint : gamePoint,
+        gamePointType : 2
+    },{
+        method: 'POST',
+        header: {'Content-Type' : 'application/json'}
+    })
+    .then(res => {
+        if(res.data){
+            console.log('포인트 데이터 삽입 성공');
+        }else{
+            console.log('포인트 데이터 삽입 실패');
+        }
+    })
+    .catch(error => console.log(error));
+    
 }
 
 // 게임 상세 조회 API

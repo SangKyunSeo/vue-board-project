@@ -14,8 +14,16 @@
             <button class="submit" @click="doGame">제출</button>
         </div>
     </div>
-    <div class="game-modal-result">
+    <div v-if="!success && gameCount > 0" class="game-modal-result">
         <span class="result">{{ ball }} 볼, {{ strike }} 스트라이크</span>
+    </div>
+    <div v-if="success" class="game-modal-result">
+        <span class="success-result">성공입니다!</span>
+        <button class="game-finish-button" @click="exitGame">종료</button>
+    </div>
+    <div v-if="!success && count === 0" class="game-modal-result">
+        <span class="fail-result">실패! 정답은 <b>{{ goal.join('') }}</b> 입니다</span>
+        <button class="game-finish-button" @click="exitGame">종료</button>
     </div>
 </template>
 <script setup>
@@ -30,13 +38,17 @@
  *    - uxWriting: 진행중
  */
 
-import { defineProps, ref, onMounted } from 'vue'
+import { defineProps, ref, onMounted, defineEmits } from 'vue'
+
+const emit = defineEmits(['finishGame']);
 
 let count = ref(0);
 let goal = ref([]);
 let inputNum = ref('');
 let ball = ref('');
 let strike = ref('');
+let gameCount = ref(0);
+let success = ref(false);
 
 const regex = /^[0-9]+$/;
 
@@ -72,11 +84,25 @@ function inputValidation(value){
 // 게임 진행
 function doGame(event){
     event.preventDefault();
+    
     if(inputValidation(inputNum.value)){
+        count.value -= 1;
+        gameCount.value += 1;
+
         // 볼인지 스트라이크인지 체크
         strike.value = checkStrike(inputNum.value);
         ball.value = checkBall(inputNum.value);
+        
+        if(strike.value === 3) success.value = true;
+
+        gameCount.value = count.value === 0 ? 0 : gameCount.value;
+        
+        finish(count.value);
+    }else{
+        inputNum.value = '';
     }
+
+    
 }
 
 // ball 체크
@@ -101,6 +127,24 @@ function checkStrike(value){
     }
     
     return strikeCount;
+}
+
+// 게임 종료
+function finish(count){
+    if(count === 0){
+        document.querySelector('.input-number').disabled = true;
+        document.querySelector('.submit').disabled = true; 
+    }
+}
+
+function exitGame(){
+    if(success.value){
+        // 게임 성공
+    }else{
+        // 게임 실페
+        emit('finishGame',false);
+    }
+    
 }
 
 defineProps({

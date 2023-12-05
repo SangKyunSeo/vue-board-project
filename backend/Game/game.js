@@ -42,4 +42,13 @@ router.get('/getGameDetail', (req, res) => {
     })
 });
 
+// 게임 포인트 삽입
+router.post('/setGamePoint', (req, res) => {
+    maria.query(`INSERT INTO game_point (game_num, member_num, game_point_type, game_point) VALUES (${req.body.gameNum}, ${req.body.memberNum}, ${req.body.gamePointType}, ${req.body.gamePoint})`, (err, rows) => {
+        if(!err){
+            res.send(true);
+        }else res.send(false);
+    });
+});
+
 module.exports = router;

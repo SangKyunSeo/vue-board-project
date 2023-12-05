@@ -89,7 +89,7 @@ async function setMyPointForStore(){
     })
     .then(res => {
         store.setUserPoint(res.data[0].pointScore === null ? 0 : res.data[0].pointScore);
-        localStorage.setItem('memberPoint', myPoint.value);
+        localStorage.setItem('memberPoint', getUserPoint.value);
     })
     .catch(error => console.log(error));
 }

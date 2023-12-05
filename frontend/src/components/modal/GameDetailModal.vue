@@ -6,7 +6,7 @@
                     <span class="game-title">{{ gameDetail.gameTitle }}</span>
                     <button @click="close">닫기</button>    
                 </div>
-                <BaseBallGameBody v-if="gameDetail.gameNum === 1" :gameNum="gameDetail.gameNum"/>
+                <BaseBallGameBody v-if="gameDetail.gameNum === 1" :gameNum="gameDetail.gameNum" @finishGame="closeModal"/>
             </div>
         </div>
     </div>
@@ -36,6 +36,10 @@ const emit = defineEmits(['gameModalOpen']);
 // 취소 버튼 클릭 시 모달창 숨기기
 function close(){
     emit('gameModalOpen', false);
+}
+
+const closeModal = (data) => {
+    emit('gameModalOpen', data);
 }
 
 </script>

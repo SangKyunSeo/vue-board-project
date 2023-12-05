@@ -47,9 +47,9 @@ router.get('/myBoardCount', (req, res) => {
 });
 
 router.get('/getMyPoint', (req, res) => {
-    maria.query(`SELECT IFNULL(SUM(point_score),0) - (SELECT IFNULL(SUM(point_score),0) FROM point WHERE member_num = ${req.query.memberNum} AND point_type = 2) AS pointScore FROM point WHERE member_num = ${req.query.memberNum} AND point_type = 1`, (err, rows) => {
+    maria.query(`SELECT IFNULL(SUM(point_score),0) - (SELECT IFNULL(SUM(point_score),0) FROM point WHERE member_num = ${req.query.memberNum} AND point_type = 2) - (SELECT IFNULL(SUM(game_point),0) FROM game_point WHERE member_num = ${req.query.memberNum} AND game_point_type = 2) + (SELECT IFNULL(SUM(game_point),0) FROM game_point WHERE member_num = ${req.query.memberNum} AND game_point_type = 1) AS pointScore FROM point WHERE member_num = ${req.query.memberNum} AND point_type = 1`, (err, rows) => {
         if(!err){
-            console.log('포인트 : ' + rows);
+            console.log('포인트 : ' + rows[0].pointScore);
             res.send(rows);
         }else{
             console.log(err);
