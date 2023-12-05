@@ -38,6 +38,7 @@ function close(){
     emit('gameModalOpen', false);
 }
 
+// 게임 종료시 모달창 닫기 위한 데이터 전달
 const closeModal = (data) => {
     emit('gameModalOpen', data);
 }

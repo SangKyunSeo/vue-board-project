@@ -33,6 +33,7 @@ let gameModalOpen = ref(false);
 let gameNum = ref(-1);
 const gameDetail = ref({});
 
+
 // 등록된 게임 리스트 조회 API
 async function getGameList(){
     axios.get('/api/game/getGameList')
@@ -67,7 +68,7 @@ const goGameDetail = (data) => {
 
 // 게임 참가 여부 확인
 function checkPoint(){
-    if(Number(getUserPoint.value) > 100){
+    if(Number(getUserPoint.value) >= 100){
         return true
     }
     return false;
@@ -99,6 +100,8 @@ async function calPoint(gameNum, gamePoint){
     .catch(error => console.log(error));
     
 }
+
+
 
 // 게임 상세 조회 API
 async function getGameDetail(gameNum){

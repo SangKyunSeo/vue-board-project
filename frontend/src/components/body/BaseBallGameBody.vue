@@ -38,9 +38,14 @@
  *    - uxWriting: 진행중
  */
 
-import { defineProps, ref, onMounted, defineEmits } from 'vue'
+import { defineProps, ref, onMounted, defineEmits, inject } from 'vue'
+import { useUserStore } from '@/stores/user-store';
+import { storeToRefs } from 'pinia';
 
+const store = useUserStore();
+const { getUserPoint, getUserNum } = storeToRefs(store);
 const emit = defineEmits(['finishGame']);
+const axios = inject('$axios');
 
 let count = ref(0);
 let goal = ref([]);
@@ -51,6 +56,12 @@ let gameCount = ref(0);
 let success = ref(false);
 
 const regex = /^[0-9]+$/;
+
+const props = defineProps({
+    gameNum : {
+        type : Number
+    },
+});
 
 // 서로 다른 랜덤한 숫자 생성
 function registRandomNumber(){
@@ -138,20 +149,41 @@ function finish(count){
 }
 
 function exitGame(){
+    emit('finishGame',false);
     if(success.value){
-        // 게임 성공
-    }else{
-        // 게임 실페
-        emit('finishGame',false);
+        // 게임 성공시 포인트 삽입
+        winGame();
+
     }
-    
 }
 
-defineProps({
-    gameNum : {
-        type : Number
-    },
-});
+// 게임 성공 시 포인트 삽입
+async function winGame(){
+    // store에 반영
+    store.setUserPoint(Number(getUserPoint.value) + 300);
+    // 로컬스토리지에 바로 반영
+    localStorage.setItem('memberPoint', Number(getUserPoint.value));
+
+    await axios.post('/api/game/setGamePoint', {
+        memberNum : getUserNum.value,
+        gameNum : props.gameNum,
+        gamePoint : 300,
+        gamePointType : 1
+    }, {
+        method: 'POST',
+        header: {'Content-Type' : 'application/json'}
+    })
+    .then(res => {
+        if(res.data){
+            console.log('포인트 데이터 삽입 성공');
+        }else{
+            console.log('포인트 데이터 삽입 실패');
+        }
+    })
+    .catch(error => console.log(error));
+}
+
+
 
 onMounted(() => {
     count.value = 3;
