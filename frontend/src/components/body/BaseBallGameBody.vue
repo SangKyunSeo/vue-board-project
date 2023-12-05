@@ -18,11 +18,11 @@
         <span class="result">{{ ball }} 볼, {{ strike }} 스트라이크</span>
     </div>
     <div v-if="success" class="game-modal-result">
-        <span class="success-result">성공입니다!</span>
+        <span class="success-result">성공입니다!</span><br>
         <button class="game-finish-button" @click="exitGame">종료</button>
     </div>
     <div v-if="!success && count === 0" class="game-modal-result">
-        <span class="fail-result">실패! 정답은 <b>{{ goal.join('') }}</b> 입니다</span>
+        <span class="fail-result">실패! 정답은 <b>{{ goal.join('') }}</b> 입니다.</span><br>
         <button class="game-finish-button" @click="exitGame">종료</button>
     </div>
 </template>
@@ -214,5 +214,16 @@ onMounted(() => {
 }
 .input-number{
     margin-right : 10px;
+}
+
+.submit{
+    border: none;
+    border-radius: 20%;
+    font-size: 16px;
+
+}
+
+.game-finish-button{
+    margin-top : 10px;
 }
 </style>

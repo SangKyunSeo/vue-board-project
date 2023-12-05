@@ -5,8 +5,8 @@
                 <div class="title">{{ game.gameTitle }}</div>
                 <div class="content">{{ game.gameContent }}</div>
                 <div class="money">
-                    <div class="game-price">상품 : {{ game.gamePrice }}</div>
-                    <div class="game-cost">참가 비용 : {{ game.gameCost }}</div>    
+                    <div class="game-price">상품 : {{ game.gamePrice.toLocaleString('ko-KR') }}</div>
+                    <div class="game-cost">참가 비용 : {{ game.gameCost.toLocaleString('ko-KR') }}</div>    
                 </div>
             </a>
         </div>

@@ -4,7 +4,7 @@
         <div class="info-section">
             <div class="user-name-section">
                 {{ user.memberName }} <br>
-                포인트 : {{ getUserPoint }} 점
+                포인트 : {{ getUserPoint.toLocaleString('ko-KR') }} 점
             </div>
             <div class="user-regdate-section">
                 가입한지 {{  parseInt(Number(new Date() - new Date(user.memberRegdate))/86400000) }}일째

@@ -7,6 +7,7 @@
                     <button @click="close">닫기</button>    
                 </div>
                 <BaseBallGameBody v-if="gameDetail.gameNum === 1" :gameNum="gameDetail.gameNum" @finishGame="closeModal"/>
+                <CrossBridgeGameBody v-if="gameDetail.gameNum === 2" :gameNum="gameDetail.gameNum" @gameModalOpen="closeModal"/>
             </div>
         </div>
     </div>
@@ -25,6 +26,7 @@
 
 import { defineProps, defineEmits } from 'vue';
 import BaseBallGameBody from '../body/BaseBallGameBody.vue'
+import CrossBridgeGameBody from '../body/CrossBridgeGameBody.vue'
 defineProps({
     gameDetail : {
         type : Object
