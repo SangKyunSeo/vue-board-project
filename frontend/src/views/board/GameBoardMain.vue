@@ -53,13 +53,17 @@ const goGameDetail = (data) => {
         if(checkPoint()){
             gameModalOpen.value = window.confirm('게임에 참가하시겠습니까? (포인트가 차감됩니다.)');
             gameNum.value = data;
-            // 게임 상세 조회
-            getGameDetail(gameNum.value);
-            // 포인트 차감
-            if(gameNum.value === 1){
-                calPoint(gameNum.value, 100);
-            }else if(gameNum.value === 2){
-                calPoint(gameNum.value, 100);
+            if(gameModalOpen.value){
+                // 게임 상세 조회
+                getGameDetail(gameNum.value);
+                // 포인트 차감
+                if(gameNum.value === 1){
+                    calPoint(gameNum.value, 100);
+                }else if(gameNum.value === 2){
+                    calPoint(gameNum.value, 100);
+                }else if(gameNum.value === 3){
+                    calPoint(gameNum.value, 500);
+                }
             }
         }else{
             alert('포인트가 부족하여 게임에 참여할 수 없습니다.');

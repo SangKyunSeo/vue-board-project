@@ -35,14 +35,13 @@
  *    - layout: GameDetail
  *    - dev: 서상균
  *    - devVersion : 01_20231205
- *    - rework: 진행중
- *    - uxWriting: 진행중
+ *    - rework: 완료
+ *    - uxWriting: 완료
  */
 
 import { ref, onMounted, defineProps, defineEmits, inject } from 'vue';
 import { useUserStore } from '@/stores/user-store';
 import { storeToRefs } from 'pinia';
-
 
 const store = useUserStore();
 const { getUserNum, getUserPoint } = storeToRefs(store);
