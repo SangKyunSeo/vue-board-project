@@ -30,9 +30,10 @@
         <div class="my-board-section">
             <h4>내가 쓴 글</h4>
             <div class="my-board-buttons">
-                <button class="my-free-board">{{ userDetail.freeCount }}</button>
-                
-                <button class="my-anony-board">{{ userDetail.anonyCount }}</button>
+                <button v-if="userDetail.freeCount > 0" class="my-free-board" @click="myBoardDetail(1)">{{ userDetail.freeCount }}</button>
+                <button v-else class="my-free-board" style="pointer-events: none;" disabled>{{ userDetail.freeCount }}</button>
+                <button v-if="userDetail.anonyCount > 0" class="my-anony-board" @click="myBoardDetail(2)">{{ userDetail.anonyCount }}</button>
+                <button v-else class="my-anony-board" disabled style="pointer-events: none;">{{ userDetail.anonyCount }}</button>
             </div>
             <div class="my-board-span">
                 <span>자유글</span>
@@ -47,10 +48,21 @@
 </template>
 
 <script setup>
+/**
+ * @description
+ *    - title: 마이페이지 body
+ *    - menu: 메인 > 마이페이지 
+ *    - layout: MyPage
+ *    - dev: 서상균
+ *    - devVersion : 01_20231206
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import { defineProps, ref, defineEmits } from 'vue';
 import UpdateMyInfoModal from '@/components/modal/UpdateMyInfoModal.vue'
 let updateModalOpen = ref(false);
-const emit = defineEmits(['changeName']);
+const emit = defineEmits(['changeName','getMyBoard']);
 
 defineProps({
     userDetail: {
@@ -58,17 +70,32 @@ defineProps({
     }
 });
 
+// 내 정보 수정 모달창 띄우기
 function updateMyInfo(){
     updateModalOpen.value = true;
 }
 
+// 내 정보 수정 모달창 닫기
 const close = (data) => {
     if(data) updateModalOpen.value = false;
 }
 
+// 이름 변경을 알리기 위한 데이터 전달
 const change = (data) => {
     emit('changeName', data);
 }
+
+// 내가 쓴 글 내역으로 이동
+function myBoardDetail(boardCategory){
+    if(boardCategory === 1){
+        // 자유글로 이동
+        emit('getMyBoard', 1);
+    }else{
+        // 익명글로 이동
+        emit('getMyBoard', 2);
+    }
+}
+
 </script>
 
 <style scoped>

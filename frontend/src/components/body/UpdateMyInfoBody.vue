@@ -24,6 +24,17 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 내 정보 수정 모달 body
+ *    - menu: 메인 > 마이페이지 > 수정 버튼 
+ *    - layout: MyPage
+ *    - dev: 서상균
+ *    - devVersion : 01_20231206
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import { ref, inject, defineProps, defineEmits } from 'vue';
 import { useUserStore } from '@/stores/user-store'
 
@@ -39,6 +50,7 @@ const axios = inject('$axios');
 
 let memberName = ref(props.userDetail.memberName);
 
+// 내 정보 수정 API (이름)
 async function updateInfo(event){
     event.preventDefault();
     

@@ -12,6 +12,17 @@
     </div>
 </template>
 <script setup>
+/**
+ * @description
+ *    - title: 내 정보 수정 모달
+ *    - menu: 메인 > 마이페이지 > 수정 버튼 
+ *    - layout: MyPage
+ *    - dev: 서상균
+ *    - devVersion : 01_20231206
+ *    - rework: 완료
+ *    - uxWriting: 완료
+ */
+
 import UpdateMyInfoBody from '../body/UpdateMyInfoBody.vue';
 import { defineEmits, defineProps } from 'vue';
 
@@ -21,14 +32,18 @@ defineProps({
         type : Object
     }
 })
+
+// 모달창 닫기 위한 데이터 전달
 function close(){
     emit('closeModal', true);
 }
 
+// 수정 후 모달창 닫기 위한 데이터 전달
 const closeUpdateModal = (data) => {
     if(data) emit('closeModal', true);
 }
 
+// 이름 변경을 알리기 위한 데이터 전달
 const change = (data) => {
     emit('changeName', data);
 }
