@@ -13,6 +13,7 @@ const reple = require('./reple/reple');
 const reaction = require('./React/react');
 const search = require('./Search/search')
 const game = require('./Game/game');
+const member = require('./Member/member');
 
 maria.connect();
 
@@ -28,7 +29,7 @@ app.use('/api/reple', reple);
 app.use('/api/react', reaction);
 app.use('/api/search', search);
 app.use('/api/game', game);
-
+app.use('/api/member', member);
 
 app.listen(3000, () => {
     console.log('sever start');

@@ -2,8 +2,11 @@
     <div class="main-header-section">
         <TitleHeader @goHome="moveHome"/>
         <CategoryHeader ref="initHeaderStyle"/>
-        <div class="attend-section" v-if="!getUserAttend">
+        <div class="attend-section" v-if="!getUserAttend && getUserNum !== ''">
             <button type="button" class="attend-button" @click="todayAttend">출석</button>
+        </div>
+        <div class="myPage-section" v-if="getUserNum !== ''">
+            <button type="button" class="myPage-button" @click="goMyPage">마이페이지</button>
         </div>
         <div class="write-section">
             <button type="button" class="write-button" @click="writeBoard">글쓰기</button>
@@ -39,7 +42,7 @@ const props = defineProps({
 const router = new useRouter();
 const initHeaderStyle = ref();
 const store = useUserStore();
-const {getUserAttend, getUserPoint} = storeToRefs(store);
+const {getUserAttend, getUserPoint, getUserNum} = storeToRefs(store);
 const emit = defineEmits(['pointUpdated']);
 
 // 글쓰기 버튼 클릭 시
@@ -108,6 +111,11 @@ async function todayAttend(){
     .catch(error => console.log(error));
 }
 
+// 마이페이지 이동
+function goMyPage(){
+    router.push('/myPage');
+}
+
 </script>
 <style scoped>
 .main-header-section{
@@ -124,6 +132,19 @@ async function todayAttend(){
     height: 40px;
     border: none;
     background-color: aquamarine;
+    font-weight: bold;
+    cursor: pointer;
+}
+.myPage-section{
+    display: flex;
+    align-items : center;
+    margin-right: 10px;
+}
+.myPage-button{
+    width: 80px;
+    height: 40px;
+    border: none;
+    background-color:plum;
     font-weight: bold;
     cursor: pointer;
 }

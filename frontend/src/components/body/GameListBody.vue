@@ -49,6 +49,8 @@ function moveGameDetail(gameNum){
 
 .article{
     height: 250px;
+    border-bottom : 1px solid #eee;
+    margin-bottom : 10px;
 }
 
 .title{

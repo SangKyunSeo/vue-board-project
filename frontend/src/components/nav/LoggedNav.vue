@@ -3,7 +3,7 @@
         <div class="profile-section"></div>
         <div class="info-section">
             <div class="user-name-section">
-                {{ user.memberName }} <br>
+                {{ getUserName }} <br>
                 포인트 : {{ getUserPoint.toLocaleString('ko-KR') }} 점
             </div>
             <div class="user-regdate-section">
@@ -41,7 +41,7 @@ import { storeToRefs } from 'pinia';
 const router = new useRouter();
 const axios = inject('$axios');
 const store = useUserStore();
-const { getUserPoint } = storeToRefs(store);
+const { getUserPoint, getUserName } = storeToRefs(store);
 
 let myBoardCount = ref(0);
 let myPoint = ref(0);

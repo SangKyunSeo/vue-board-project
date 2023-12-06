@@ -16,6 +16,10 @@ export const useUserStore = defineStore('user', ()=>{
         memberRegdate.value = regdate;
     }
 
+    const setUserName = (name) => {
+        memberName.value = name;
+    }
+
     const setUserPoint = (point) => {
         memberPoint.value = point;
     }
@@ -57,6 +61,7 @@ export const useUserStore = defineStore('user', ()=>{
 
     return { 
         setUserInfo, 
+        setUserName,
         setUserPoint, 
         setUserAttend,
         getUserName, 

@@ -40,6 +40,11 @@ const routes = [
     path: '/gameBoard',
     name: 'GameBoard',
     component: () => import(/* webpackChunkName: "about" */ '../views/board/GameBoardMain.vue')
+  },
+  {
+    path: '/myPage',
+    name: 'MyPage',
+    component: () => import(/* webpackChunkName: "about" */ '../views/myPage/MyPageMain.vue')
   }
 ]
   
