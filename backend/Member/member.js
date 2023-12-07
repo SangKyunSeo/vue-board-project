@@ -54,7 +54,7 @@ router.get('/getMyFreeBoardList', (req, res) => {
     'ON b.board_num = f.board_num ' + 
     'WHERE board_category = ' +  
     req.query.boardCategory +
-    ' AND member_num = ' + 
+    ' AND b.member_num = ' + 
     req.query.memberNum +
     ' GROUP BY b.board_num ORDER BY b.board_regdate DESC', (err, rows) => {
         if(!err){
@@ -63,7 +63,7 @@ router.get('/getMyFreeBoardList', (req, res) => {
                 boardListVO.push({
                     boardNum : row.board_num,
                     boardTitle : row.board_title,
-                    boardHit : row.boardHit,
+                    boardHit : row.board_hit,
                     boardCategory : row.board_category,
                     boardRegdate : row.board_regdate,
                     boardMdate : row.board_mdate,

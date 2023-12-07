@@ -2,10 +2,10 @@
     <div class="main-header-section">
         <TitleHeader @goHome="moveHome"/>
         <CategoryHeader ref="initHeaderStyle"/>
-        <div class="attend-section" v-if="!getUserAttend && getUserNum !== ''">
+        <div class="attend-section" v-if="!getUserAttend && getUserNum !== '' && getUserNum !== 0">
             <button type="button" class="attend-button" @click="todayAttend">출석</button>
         </div>
-        <div class="myPage-section" v-if="getUserNum !== ''">
+        <div class="myPage-section" v-if="getUserNum !== 0 && getUserNum !== ''">
             <button type="button" class="myPage-button" @click="goMyPage">마이페이지</button>
         </div>
         <div class="write-section">
@@ -115,6 +115,8 @@ async function todayAttend(){
 function goMyPage(){
     router.push('/myPage');
 }
+
+
 
 </script>
 <style scoped>

@@ -2,8 +2,8 @@
     <div class="myPage-section">
         <MainBodyHeader :msg="msg"/>
         <MyPageBody v-show="viewState === 0" :userDetail="userDetail" @changeName="change" @getMyBoard="getMyBoardDetail"/>
-        <MyBoardBody v-if="viewState === 1" :freeBoardList="freeBoardList"/>
-        <MyBoardBody v-if="viewState === 2" :anonyBoardList="anonyBoardList"/>
+        <MyBoardBody v-if="viewState === 1" :boardList="freeBoardList" :boardCategory="viewState" @toggle="changeViewState"/>
+        <MyBoardBody v-if="viewState === 2" :boardList="anonyBoardList" :boardCategory="viewState" @toggle="changeViewState"/>
     </div>
 </template>
 <script setup>
@@ -82,7 +82,10 @@ async function getMyAnonyBoardList(){
     .catch(error => console.log(error));
 }
 
-
+// 자유글 , 익명글 토글
+const changeViewState = (data) => {
+    viewState.value = data;
+}
 
 
 // 내가 쓴 글 내역으로 이동
