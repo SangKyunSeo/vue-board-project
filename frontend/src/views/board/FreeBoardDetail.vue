@@ -177,6 +177,12 @@ async function getFavCount(){
 function showRegistReple(event){
     event.preventDefault();
 
+    if(getUserNum.value === boardDetail.value.memberNum){
+        alert('본인 글에는 댓글을 작성할 수 없습니다!');
+        return;
+    }
+
+
     if(getUserNum.value === null || getUserNum.value === ''){
         alert('로그인 해주세요.');
         return;
@@ -217,26 +223,43 @@ function cancelRegistReple(event){
 }
 
 
-// 댓글 등록 API
+// 댓글 등록 API (depth = 0) 최상위 부모에 해당됨
 async function registReple(){
-    await axios.post('/api/reple/writeReple', {
-        memberNum : getUserNum.value,
-        boardNum: boardNum,
-        repleContent: repleContent.value
-    },{
-        method: 'POST',
-        header: {'Content-Type' : 'application/json'}
-    })
+
+    // reple_num 가져오기
+    await axios.get('/api/reple/getRepleNum')
     .then(res => {
-        if(res.data){
-            repleContent.value = '';
-            showRepleForm.value = false;
-            addPointReple();
-            getRepleList();
-            getRepleTotalCount();
-        }else console.log('댓글 작성 오류');
+        console.log(res.data.repleNum);
+
+        axios.post('/api/reple/writeReple', {
+            repleNum : res.data.repleNum,
+            memberNum : getUserNum.value,
+            boardNum: boardNum,
+            repleContent: repleContent.value,
+            groupId : res.data.repleNum,
+            repleDepth : 0,
+            childNums : 0,
+            parentId : res.data.repleNum
+        },{
+            method: 'POST',
+            header: {'Content-Type' : 'application/json'}
+        })
+        .then(res => {
+            if(res.data){
+                repleContent.value = '';
+                showRepleForm.value = false;
+                addPointReple();
+                getRepleList();
+                getRepleTotalCount();
+            }else console.log('댓글 작성 오류');
+        })
+        .catch(error => console.log(error));
+
     })
     .catch(error => console.log(error));
+
+
+    
 }
 
 // 댓글 목록 API
