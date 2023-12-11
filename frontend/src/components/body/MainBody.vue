@@ -2,9 +2,9 @@
     <MainBodyHeader :msg="popularHeader"/>
     <div v-if="popularBoardList !== null" class="popular-board-article">
         <div :key="i" v-for="(board, i) in popularBoardList" class="article" >
-            <span v-if="board.boardCategory === 1" class="board-cate"><a>자유</a></span>
-            <span v-if="board.boardCategory === 2" class="board-cate"><a>익명</a></span>
-            <a class="board-title">{{ board.boardTitle }}</a>
+            <span v-if="board.boardCategory === 1" class="board-cate"><a @click="goBoard(board.boardCategory)">자유</a></span>
+            <span v-if="board.boardCategory === 2" class="board-cate"><a @click="goBoard(board.boardCategory)">익명</a></span>
+            <a class="board-title" @click="addHit(board.boardNum, board.boardCategory)">{{ board.boardTitle }}</a>
             <div class="article-elements">
                 <span>🤍 {{ board.favCount }}</span>
                 <span>👁 {{ board.boardHit }}</span>
@@ -32,9 +32,10 @@
 
 import MainBodyHeader from '../header/MainBodyHeader.vue';
 import { ref, inject, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 const axios = inject('$axios');
-
+const router = new useRouter();
 const popularHeader = ref('인기글');
 let popularBoardList = ref();
 
@@ -45,6 +46,46 @@ async function getPopularBoardList(){
         popularBoardList.value = res.data;
     })
     .catch(error => console.log(error));
+}
+
+
+// 게시글 상세 이동 시 조회 수 증가
+async function addHit(boardNum, boardCategory){
+    await axios.post('/api/board/addHit', {
+        boardNum : boardNum
+    })
+    .then(res => {
+        if(res.data){
+            moveBoardDetail(boardNum, boardCategory);
+        }else console.log('데이터 통신 오류');
+    })
+    .catch(error => console.log(error));
+}
+
+// 메인 페이지에서 게시글 클릭 시 이동
+function moveBoardDetail(boardNum, boardCategory){
+    if(boardCategory === 1){
+        // 자유 글
+        router.push({path : '/freeBoardDetail', query : {
+            boardNum : boardNum
+        }});
+    }else{
+        // 익명 글
+        router.push({path: '/anonyBoardDetail', query : {
+            boardNum : boardNum
+        }});
+    }
+}
+
+// 카테고리 이동
+function goBoard(boardCategory){
+    if(boardCategory === 1){
+        // 자유 카테고리
+        router.push('/freeBoard');
+    }else{
+        // 익명 카테고리
+        router.push('/anonyBoard');
+    }
 }
 
 onMounted(()=>{
@@ -76,6 +117,9 @@ onMounted(()=>{
     line-height: 25px;
     font-size: 14px;
     cursor: pointer;
+}
+.board-title:hover{
+    font-weight: bold;
 }
 
 .article-elements{

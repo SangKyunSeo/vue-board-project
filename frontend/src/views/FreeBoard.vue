@@ -100,11 +100,17 @@ async function getFreeBoardList(){
     .catch(error => console.log(error));
 }
 
+// 카테고리 헤더 변경
+function setCategoryStyle(){
+    document.getElementById('free_board').style.fontWeight = 'bold';
+    document.getElementById('anony_board').style.fontWeight = '';
+    document.getElementById('game_board').style.fontWeight = '';
+}
 
 onMounted(() => {
     getUserInfo();
     getFreeBoardList();
-    
+    setCategoryStyle();
 });
 
 </script>

@@ -15,7 +15,7 @@
                     </tr>
                 </thead>
                 <tbody v-if="boardCategory === 1">
-                    <tr v-for="(board, index) in boardList" :key="index">
+                    <tr v-for="(board, index) in boardList" :key="index" class="my-free-board-list">
                         <td>{{ board.boardNum }}</td>
                         <td><a @click="moveBoardDetail(board.boardNum)" class="board-title-click">{{ board.boardTitle }}</a></td>
                         <td>{{ String(board.boardRegdate).slice(0,10) }}</td>
@@ -27,9 +27,10 @@
                     </tr>
                 </tbody>
                 <tbody v-else>
-                    <tr v-for="(board, index) in boardList" :key="index">
+                    <tr v-for="(board, index) in boardList" :key="index" class="my-anony-board-list">
                         <td>{{ board.boardNum }}</td>
-                        <td>{{ board.boardTitle }}</td>
+                        <td v-if="todayRegistered(String(board.boardRegdate))" class="today-board" @click="moveBoardDetail(board.boardNum)">{{ board.boardTitle }}</td>
+                        <td v-else class="not-today-board">{{ board.boardTitle }}</td>
                         <td>{{ String(board.boardRegdate).slice(0,10) }}</td>
                         <td v-if="board.boardMdate !== null">{{ String(board.boardMdate).slice(0,10) }}</td>
                         <td v-else></td>
@@ -49,8 +50,8 @@
  *    - layout: MyPage
  *    - dev: 서상균
  *    - devVersion : 01_20231207
- *    - rework: 진행중
- *    - uxWriting: 진행중
+ *    - rework: 완료
+ *    - uxWriting: 완료
  */
 import { defineProps, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
@@ -90,6 +91,24 @@ function moveBoardDetail(boardNum){
     }
 }
 
+// 익명글 금일 작성인지 체크
+function todayRegistered(boardRegdate){
+    const date = new Date();
+    const year = String(date.getFullYear());
+    let month = String(date.getMonth() + 1);
+    let day = String(date.getDate());
+
+    month = month < 10 ? '0' + month : month;
+    day = day < 10 ? '0' + day : day;
+
+    const boardYear = boardRegdate.slice(0,4);
+    const boardMonth = boardRegdate.slice(5,7);
+    const boardDay = boardRegdate.slice(8,10);
+
+    if(year === boardYear && month === boardMonth && day === boardDay) return true;
+    return false;
+}
+
 
 </script>
 <style scoped>
@@ -114,5 +133,12 @@ function moveBoardDetail(boardNum){
 }
 .board-title-click:hover{
     font-weight: bold;
+}
+
+.today-board{
+    cursor: pointer;
+}
+.not-today-board{
+    color: red;
 }
 </style>

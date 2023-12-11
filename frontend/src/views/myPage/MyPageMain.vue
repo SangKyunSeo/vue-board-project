@@ -89,6 +89,7 @@ async function getMyAnonyBoardList(){
 // 자유글 , 익명글 토글
 const changeViewState = (data) => {
     viewState.value = data;
+    getMyBoardDetail(data);
 }
 
 // 내가 쓴 글 내역으로 이동

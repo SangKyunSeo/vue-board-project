@@ -59,4 +59,12 @@ router.get('/getReaction', (req, res) => {
     });
 });
 
+router.get('/myTodayReaction', (req, res) => {
+    maria.query(`SELECT COUNT(*) as count FROM reaction r LEFT JOIN board b ON r.board_num = b.board_num WHERE DATE_FORMAT(b.board_regdate, '%Y-%m-%d') = CURDATE() AND r.member_num = ${req.query.memberNum}`, (err, rows) => {
+        if(!err){
+            res.send(rows[0]);
+        }else console.log(err);
+    });
+});
+
 module.exports = router;

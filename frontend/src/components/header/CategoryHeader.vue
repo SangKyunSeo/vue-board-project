@@ -20,9 +20,10 @@
  *    - uxWriting: 완료
  */
 import { useRouter } from 'vue-router';
-import { defineExpose, onMounted } from 'vue';
+import { defineExpose, onMounted, ref } from 'vue';
 
 const router = new useRouter();
+let link = ref(window.location.href);
 
 // 자유 게시판 이동 및 스타일 적용
 function goFreeBoard(){
@@ -50,7 +51,8 @@ function goGameBoard(){
 
 // 현재 페이지 URI 확인
 function checkCateState(){
-    return window.location.href;
+    link.value = window.location.href;
+    return link.value;
 }
 
 // 스타일 초기화
@@ -86,6 +88,8 @@ defineExpose({
 });
 
 onMounted(() => {
+    console.log('카테고리 헤더 마운트');
+
     if(checkCateState().includes('freeBoard')){
         currentFree();
     }else if(checkCateState().includes('anonyBoard')){

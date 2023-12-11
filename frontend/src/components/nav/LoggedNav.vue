@@ -13,7 +13,7 @@
                 내가 쓴 글 {{ myBoardCount }} 개
             </div>
             <div class="user-fav-section">
-                관심 글
+                관심 글 {{ myReactionTotal }}
             </div>
         </div>
         <div class="login-button-section">
@@ -45,6 +45,7 @@ const { getUserPoint, getUserName } = storeToRefs(store);
 
 let myBoardCount = ref(0);
 let myPoint = ref(0);
+let myReactionTotal = ref(0);
 
 const props = defineProps({
     user : {
@@ -100,6 +101,22 @@ function getMyPoint(){
     return getUserPoint.value;
 }
 
+
+// 관심글 개수 구하기
+async function getInteresting(){
+    // 익명글 반응 한 개수 구하기
+    await axios.get('/api/react/myTodayReaction',{
+        params: {
+            memberNum : props.user.memberNum
+        }
+    })
+    .then(res => {
+        myReactionTotal.value = res.data.count;
+        console.log(myReactionTotal.value);
+    })
+    .catch(error => console.log(error));
+}
+
 defineExpose({
     getMyPoint
 });
@@ -108,6 +125,7 @@ onMounted(()=>{
     getMyBoardCount();
     setMyPointForStore();
     getMyPoint();
+    getInteresting();
 });
 
 </script>
