@@ -23,11 +23,24 @@
                 <button id="addButton" @click="showMoreReple(i)">더보기</button>
             </div>      
         </div>
-        <div class="board-reple-section" v-if="repleList.length > 0 && i > 0" :index="i" style="display:none;">
+        <div class="board-reple-section" v-if="repleList.length > 0 && i > 0" :index="i" style="display: none;">
             <div :key="j" v-for="(reple, j) in repleList.slice(i * contentCount, (i+1) * contentCount)" class="reple-content">
-                <p class="reple-member">{{ reple.memberName }}</p>
-                <p class="reple-content-detail">{{ reple.repleContent }}</p>
-                <p class="reple-regdate">{{ reple.repleRegdate }}</p>
+                <div class="reple-content-details">
+                    <p class="reple-member">{{ reple.memberName }}</p>
+                    <p class="reple-content-detail">{{ reple.repleContent }}</p>
+                    <p class="reple-regdate">{{ reple.repleRegdate }}</p>
+                </div>
+                <div class="reple-reple-content">
+                    <span @click="showReplyForm(j + i * contentCount)">💭</span>
+                </div>
+                <div v-if="showReply[j + i * contentCount]" class="reply-section">
+                    <textarea class="reply-write-content" id="repleContent" v-model="replyContent[j + i * contentCount]" maxlength="1000" ></textarea>
+                    <p>{{ 1000 - replyContent[j + i * contentCount].length }}</p>
+                    <div class="reply-write-buttons">
+                        <button class="reply-write-check" @click="setReply(j + i * contentCount)">확인</button>
+                        <button class="reply-write-cancel" @click="cancelShowReply(j + i * contentCount)">취소</button>
+                    </div>
+                </div>
             </div>
             <div class="board-reple-add-button" v-if="i !== buttonCount">
                 <button id="addButton" @click="showMoreReple(i)">더보기</button>
@@ -51,7 +64,7 @@
  */
 
 import axios from 'axios';
-import { defineProps, onMounted, ref } from 'vue';
+import { defineProps, onMounted, ref, defineEmits } from 'vue';
 import { useUserStore } from '@/stores/user-store';
 import { storeToRefs } from 'pinia';
 
@@ -62,10 +75,14 @@ const contentCount = ref(5);
 let buttonCount = ref(0);
 let showReply = ref([]);
 let replyContent = ref([]);
+const emit = defineEmits(['updateReply']);
 
 const props = defineProps({
     repleList: {
         type: Array
+    },
+    boardDetail: {
+        type: Object
     }
 });
 
@@ -98,6 +115,8 @@ function showMoreReple(index){
     document.querySelectorAll('.board-reple-section').forEach((element) => {
         if(Number(element.getAttribute('index')) === Number(index+1)) element.style.display = 'block';
     })
+
+    getReplyStyle();
 }
 
 // 대댓글 등록
@@ -140,6 +159,7 @@ async function setReply(index){
             console.log(res.data);
             if(res.data){
                 updateChildNums(parentId, index);
+                emit('updateReply', true);
             }
         })  
         .catch(error => console.log(error));
@@ -161,7 +181,7 @@ async function updateChildNums(parentId, index){
     .then(res => {
         if(res.data) {
             console.log('자식 댓글 수 증가 성공');
-            showReply.value[index] = false;
+            showReply.value[index] = false                                                                       ;
         }
         else console.log('자식 댓글 수 증가 실패');
     })
@@ -169,6 +189,16 @@ async function updateChildNums(parentId, index){
 }
 
 
+// 대댓글 UI 컨트롤
+function getReplyStyle(){
+
+    document.querySelectorAll('.reple-content').forEach((e,i) => {
+        e.style.marginLeft = props.repleList[i].repleDepth * 40 + 'px';
+        if(props.repleList[i].memberNum === props.boardDetail.memberNum){
+            e.style.backgroundColor = '#e6ffe6';
+        }
+    });
+}
 
 onMounted(() => {
     buttonCount.value = getButtonCount();
@@ -180,8 +210,9 @@ onMounted(() => {
             replyContent.value.push('');
         }
     }
+    getReplyStyle();
+    
 });
-
 </script>
 <style scoped>
 .board-reple-section{

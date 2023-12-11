@@ -33,7 +33,49 @@ router.post('/addPointReple', (req, res) => {
             res.send(true);
         }else res.send(false);
     })
-})
+});
 
+router.get('/getMyPointDetail', (req, res) => {
+    maria.query(`SELECT * FROM point WHERE member_num = ${req.query.memberNum}`, (err, rows) => {
+        if(!err){
+            const myPointDetail = [];
+
+            for(let row of rows){
+                myPointDetail.push({
+                    pointNum : row.point_num,
+                    memberNum : row.member_num,
+                    pointCate : row.point_cate,
+                    pointScore : row.point_score,
+                    pointType : row.point_type,
+                    pointDate : row.point_date
+                });
+            }
+            console.log(myPointDetail);
+            res.send(myPointDetail);
+        }else console.log(err);
+    });
+});
+
+router.get('/getMyGamePointDetail', (req, res) => {
+    maria.query(`SELECT * FROM game_point gp LEFT JOIN game g ON gp.game_num = g.game_num WHERE member_num = ${req.query.memberNum}`, (err, rows) => {
+        if(!err){
+            const myGamePointDetail = [];
+
+            for(let row of rows){
+                myGamePointDetail.push({
+                    gamePointNum : row.game_point_num,
+                    gameNum : row.game_num,
+                    memberNum : row.member_num,
+                    gamePointDate : row.game_point_date,
+                    gamePointType : row.game_point_type,
+                    gamePoint : row.game_point,
+                    gameTitle : row.game_title
+                });
+            }
+            console.log(myGamePointDetail);
+            res.send(myGamePointDetail);
+        }else console.log(err);
+    });
+});
 
 module.exports = router;

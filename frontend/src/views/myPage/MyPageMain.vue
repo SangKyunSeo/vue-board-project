@@ -1,9 +1,10 @@
 <template>
     <div class="myPage-section">
         <MainBodyHeader :msg="msg"/>
-        <MyPageBody v-show="viewState === 0" :userDetail="userDetail" @changeName="change" @getMyBoard="getMyBoardDetail"/>
+        <MyPageBody v-show="viewState === 0" :userDetail="userDetail" @changeName="change" @getMyBoard="getMyBoardDetail" @getMyPointDetail="goMyPointDetail"/>
         <MyBoardBody v-if="viewState === 1" :boardList="freeBoardList" :boardCategory="viewState" @toggle="changeViewState"/>
         <MyBoardBody v-if="viewState === 2" :boardList="anonyBoardList" :boardCategory="viewState" @toggle="changeViewState"/>
+        <MyPointBody v-if="viewState === 3" @toggle="changeViewState" :myPointDetail="myPointDetail" :myGamePointDetail="myGamePointDetail"/>
     </div>
 </template>
 <script setup>
@@ -20,6 +21,7 @@
 import MainBodyHeader from '../../components/header/MainBodyHeader.vue';
 import MyPageBody from '../../components/body/MyPageBody.vue';
 import MyBoardBody from '../../components/body/MyBoardBody.vue';
+import MyPointBody from '../../components/body/MyPointBody.vue';
 
 import { ref, onMounted, inject } from 'vue'
 import { useUserStore } from '@/stores/user-store';
@@ -33,6 +35,8 @@ const userDetail = ref({});
 let viewState = ref(0);
 const freeBoardList = ref([]);
 const anonyBoardList = ref([]);
+const myPointDetail = ref([]);
+const myGamePointDetail = ref([]);
 
 // 사용자 상세 조회 API
  const getUserDetail = async () => {
@@ -87,7 +91,6 @@ const changeViewState = (data) => {
     viewState.value = data;
 }
 
-
 // 내가 쓴 글 내역으로 이동
 const getMyBoardDetail = (data) => {
     viewState.value = data;
@@ -95,10 +98,44 @@ const getMyBoardDetail = (data) => {
     if(viewState.value === 2 && userDetail.value.anonyCount > 0) getMyAnonyBoardList();
 }
 
+// 그냥 내 포인트 조회
+async function getPointDetail(){
+    await axios.get('/api/point/getMyPointDetail', {
+        params : {
+            memberNum : getUserNum.value
+        }
+    })
+    .then(res => {
+        console.log(res);
+        myPointDetail.value = res.data;
+    })
+    .catch(error => console.log(error));
+}
 
+// 게임 관련 내 포인트 조회
+async function getGamePointDetail(){
+    await axios.get('/api/point/getMyGamePointDetail', {
+        params : {
+            memberNum : getUserNum.value
+        }
+    })
+    .then(res => {
+        console.log(res);
+        myGamePointDetail.value = res.data;
+    })
+    .catch(error => console.log(error));
+}
+
+
+// 내 포인트 내역으로 이동
+const goMyPointDetail = (data) =>{
+    if(data) viewState.value = 3;
+}
 
 onMounted(()=>{
     getUserDetail();
+    getPointDetail();
+    getGamePointDetail();
 });
 
 </script>

@@ -38,7 +38,7 @@
             </div>
         </div>
         <hr>
-        <RepleList v-if="repleList.length > 0" :repleList="repleList" />
+        <RepleList v-if="reSortList.length > 0" :repleList="reSortList" @updateReply="updateReplyData" :boardDetail="boardDetail"/>
         <BoardUpdateModal v-if="updateModalOpen" :boardDetail="boardDetail" @updateModalClose="modalClose" @updatedBoardDetail="updatedData"/>
     </div>
     
@@ -84,6 +84,8 @@ const month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1): date.get
 const day = date.getDate < 10 ? '0' + date.getDate() : date.getDate();
 const today = year + '/' + month + '/' + day; 
 const todayRepleCount = ref(0);
+const reSortList = ref([]);
+const parentReple = ref([]);
 
 // 자유글 조회 API
 async function getBoardDetail(){
@@ -239,7 +241,7 @@ async function registReple(){
             groupId : res.data.repleNum,
             repleDepth : 0,
             childNums : 0,
-            parentId : res.data.repleNum
+            parentId : 0
         },{
             method: 'POST',
             header: {'Content-Type' : 'application/json'}
@@ -251,14 +253,13 @@ async function registReple(){
                 addPointReple();
                 getRepleList();
                 getRepleTotalCount();
+                location.reload();
             }else console.log('댓글 작성 오류');
         })
         .catch(error => console.log(error));
 
     })
     .catch(error => console.log(error));
-
-
     
 }
 
@@ -271,9 +272,37 @@ async function getRepleList(){
     })
     .then(res => {
         repleList.value = res.data;
-        console.log(repleList.value);
+        initReSortList();
+        getParentReple();
+        for(let reple of parentReple.value){
+            reSortList.value.push(reple);
+            reSort(reple, repleList.value);
+        }
     })  
     .catch(error => console.log(error));
+}
+
+// 최상위 부모 댓글 배열 구하기
+function getParentReple(){
+    for(let reple of repleList.value){
+        if(reple.parentId === 0) parentReple.value.push(reple);
+    }
+}
+
+// DFS를 사용해 댓글 목록 재정렬
+function reSort(reple, repleList){
+    for(let i = 0; i < repleList.length; i++){
+        if(reple.repleNum === repleList[i].parentId){
+            reSortList.value.push(repleList[i]);
+            //reSort(repleList[i], repleList.slice(i, repleList.length));
+            reSort(repleList[i], repleList);
+        }
+    }
+}
+// 부모 댓글, 재정렬된 댓글 초기화
+function initReSortList(){
+    reSortList.value.length = 0;
+    parentReple.value.length = 0;
 }
 
 // 포인트 20 누적
@@ -325,7 +354,14 @@ const updatedData = (data) => {
     boardDetail.value.boardContent = data.boardContent;
 }
 
+const updateReplyData = (data) => {
+    if(data){
+        initReSortList();
 
+        getRepleList();
+        getRepleTotalCount();
+    }
+}
 onBeforeMount(() => {
     getBoardDetail();
 });

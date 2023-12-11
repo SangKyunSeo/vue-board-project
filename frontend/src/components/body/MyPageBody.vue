@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="my-point-section">
-            <a>내 포인트 내역 확인하러 가기 ➡ </a>
+            <a @click="getMyPointDetail">내 포인트 내역 확인하러 가기 ➡ </a>
         </div>
         <UpdateMyInfoModal v-if="updateModalOpen" @closeModal="close" :userDetail="userDetail" @changeName="change"/>
     </div>
@@ -62,7 +62,7 @@
 import { defineProps, ref, defineEmits } from 'vue';
 import UpdateMyInfoModal from '@/components/modal/UpdateMyInfoModal.vue'
 let updateModalOpen = ref(false);
-const emit = defineEmits(['changeName','getMyBoard']);
+const emit = defineEmits(['changeName','getMyBoard', 'getMyPointDetail']);
 
 defineProps({
     userDetail: {
@@ -94,6 +94,11 @@ function myBoardDetail(boardCategory){
         // 익명글로 이동
         emit('getMyBoard', 2);
     }
+}
+
+// 내 포인트 내역으로 이동
+function getMyPointDetail(){
+    emit('getMyPointDetail', true);
 }
 
 </script>
