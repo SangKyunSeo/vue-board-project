@@ -92,6 +92,12 @@ function showReplyForm(index){
         alert('본인이 작성한 댓글에 대댓글을 작성할 수 없습니다.');
         return;
     }
+
+    if(getUserNum.value === '' || getUserNum.value === null){
+        alert('로그인 해주세요!');
+        return;
+    }
+
     showReply.value[index] = true;
 }
 
