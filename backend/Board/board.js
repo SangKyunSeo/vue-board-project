@@ -114,5 +114,11 @@ router.post('/updateBoard', (req, res) => {
     });
 });
 
-
+router.get('/myFreeInterestTotal', (req, res) => {
+    maria.query(`SELECT COUNT(*) AS count FROM (SELECT board_num from fav where member_num = ${req.query.memberNum} UNION SELECT board_num FROM reple WHERE member_num = ${req.query.memberNum} GROUP by board_num) s`, (err, rows) => {
+        if(!err){
+            res.send(rows[0]);
+        }else console.log(err);
+    })
+});
 module.exports = router;
