@@ -1,17 +1,25 @@
 <template>
     <div class="login-modal-section">
-        <LoginTitle />
-        <button @click="close">닫기</button>
-        <form class="login-modal-form">
-            <span>ID</span>
-            <input type="text" id="loginId" placeholder="아이디 입력" v-model="userId">
-            <br>
-            <span>PW</span>
-            <input type="password" id="loginPw" placeholder="비밀번호 입력" v-model="userPw">
-            <br>
-            <button @click.prevent="login">확인</button>
-            <button @click.prevent="registerForm">회원가입</button>
-        </form>        
+        <div class="login-modal-content">
+            <div class="login-modal-body">
+                <LoginTitle />
+                <form class="login-modal-form">
+                    <div class="input-id-section">
+                        <label>ID</label>
+                        <input type="text" id="loginId" placeholder="아이디 입력" v-model="userId">
+                    </div>
+                    <div class="input-pw-section">
+                        <label>PW</label>
+                        <input type="password" id="loginPw" placeholder="비밀번호 입력" v-model="userPw" autocomplete="off">
+                    </div>
+                    <div class="input-buttons">
+                        <button @click.prevent="login">확인</button>
+                        <button @click.prevent="registerForm">회원가입</button>
+                        <button @click="close">닫기</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -86,3 +94,66 @@ function registerForm(){
 }
 
 </script>
+
+<style scoped>
+.login-modal-section{
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.login-modal-body{
+    width: 300px;
+    height: 300px;
+    padding: 30px 30px;
+    margin: 0 auto;
+    border: 1px solid #777;
+    background-color: #fff;
+}
+
+.input-id-section{
+    width : 100%;
+    margin-top : 10px;
+}
+.input-pw-section{
+    width : 100%;
+    margin-top : 10px;
+}
+
+.login-modal-form label{
+    display : inline-block;
+    width: 15%;
+    text-align: left;
+    font-weight: bold;
+}
+
+.login-modal-form input{
+    border: none;
+    border-bottom: 1px solid gray;
+}
+.login-modal-form input:focus{
+    outline: none;
+}
+.input-buttons{
+    display: flex;
+    justify-content: space-between;
+    padding: 40px;   
+}
+
+.input-buttons button{
+    border: none;
+    background: none;
+    cursor: pointer;
+    background-color:seashell;
+    font-size: 14px; 
+    padding: 10px;
+}
+.input-buttons button:hover{
+    font-weight: bold;
+}
+</style>

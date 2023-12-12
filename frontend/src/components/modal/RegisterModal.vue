@@ -1,30 +1,43 @@
 <template>
     <div class="register-modal-section">
-        <RegisterTitle />
-        <form class="register-modal-form">
-            <span>닉네임</span>
-            <input type="text" id="userName" placeholder="닉네임 입력" v-model="userName">
-            <br>
-            <span>ID</span>
-            <input type="text" id="userId" placeholder="아이디 입력" v-model="userId" @keyup="duplicateCheckInit">
-            <button @click.prevent="checkDuplicate">중복확인</button>
-            <span v-if="duplicateCheck === 1" style="color: blue;"> 사용가능</span>
-            <span v-if="duplicateCheck === 2" style="color: red;">중복</span>
-            <br>
-            <span>PW</span>
-            <input type="password" id="userPw" placeholder="비밀번호 입력" v-model="userPw">
-            <br>
-            <span>PW확인</span>            
-            <input type="password" id="userPwCheck" placeholder="비밀번호 재입력" v-model="userPwCheck">
-            <br>
-            <label for="male">남자</label>
-            <input type="radio" v-model="radioValue" value="male" id="male" name="gender" checked>
-            <label for="female">여자</label>
-            <input type="radio" v-model="radioValue" value="female" id="female" name="gender">
-            <br>
-            <button @click.prevent="register">확인</button>
-            <button @click.prevent="close">취소</button>
-        </form>  
+        <div class="register-modal-content">
+            <div class="register-modal-body">
+                <RegisterTitle />
+                <form class="register-modal-form">
+                    <div class="input-nickname">
+                        <label>닉네임</label>
+                        <input type="text" id="userName" placeholder="닉네임 입력" v-model="userName">
+                    </div>
+                    <div class="input-id">
+                        <label>ID</label>
+                        <input type="text" id="userId" placeholder="아이디 입력" v-model="userId" @keyup="duplicateCheckInit">
+                    </div>
+                    <div class="id-duplicate">
+                        <button @click.prevent="checkDuplicate">중복확인</button>
+                        <span v-if="duplicateCheck === 1" style="color: blue;"> 사용가능</span>
+                        <span v-if="duplicateCheck === 2" style="color: red;">중복</span>
+                    </div>
+                    <div class="input-pw">
+                        <label>PW</label>
+                        <input type="password" id="userPw" placeholder="비밀번호 입력" v-model="userPw">    
+                    </div>                    
+                    <div class="input-re-pw">
+                        <label>PW확인</label>            
+                        <input type="password" id="userPwCheck" placeholder="비밀번호 재입력" v-model="userPwCheck">
+                    </div>                    
+                    <div class="input-gender">
+                        <label for="male">남자</label>
+                        <input type="radio" v-model="radioValue" value="male" id="male" name="gender" checked>
+                        <label for="female">여자</label>
+                        <input type="radio" v-model="radioValue" value="female" id="female" name="gender">
+                    </div>
+                    <div class="input-buttons">
+                        <button @click.prevent="register">확인</button>
+                        <button @click.prevent="close">취소</button>
+                    </div>
+                </form>  
+            </div>
+        </div>
     </div>
 </template>
 <script setup>
@@ -83,6 +96,7 @@ async function checkDuplicate(){
             duplicateCheck.value = 1;
         }else{
             duplicateCheck.value = 2;
+            userId.value = '';
         }
     });
 }
@@ -134,3 +148,85 @@ async function register(){
 }
 
 </script>
+<style scoped>
+.register-modal-section{
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.register-modal-body{
+    width: 500px;
+    height: 400px;
+    padding: 30px 30px;
+    margin: 0 auto;
+    border: 1px solid #777;
+    background-color: #fff;
+}
+
+.register-modal-form{
+    width: 100%;
+}
+.register-modal-form div{
+    padding: 5px;
+}
+.input-nickname, .input-id, .input-re-pw, .input-pw, .id-duplicate{
+    width: 60%;
+    display : flex;
+    margin: 10px auto;
+    justify-content: space-between;
+    border-bottom : 1px solid #eee;
+}
+.input-nickname input, .input-id input, .input-re-pw input, .input-pw input{
+    border: none;
+}
+.input-nickname input, .input-id input, .input-re-pw input, .input-pw input:focus{
+    outline: none;
+}
+.input-gender{
+    display: flex;
+    width: 60%;
+    margin: 0 auto;
+}
+
+.register-modal-form label{
+    margin-left : 0;
+    text-align: left;
+    font-weight: bold;
+}
+.id-duplicate span{
+    font-weight: bold;
+    margin: 0 auto;
+}
+.id-duplicate button{
+    background : none;
+    border: 1px solid #ff9496;
+    cursor : pointer;
+}
+.id-duplicate button:hover{
+    border : 1px solid #fc4245;
+    font-weight: bold;
+}
+.input-buttons{
+    width : 24%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+}
+.input-buttons button{
+    background: #eee;
+    border: none;
+    cursor : pointer;
+    font-size: 14px;
+    padding: 10px;
+}
+.input-buttons button:hover{
+    background: gray;
+    color: white;
+}
+</style>

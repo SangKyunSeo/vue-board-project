@@ -42,7 +42,11 @@ function loginModalOpen(){
     height: 5%;
 }
 .login-btn{
-    width: 100%;
+    width: 60%;
     height: 100%;
+    background-color: thistle;
+    cursor: pointer;
+    box-shadow: 0px 0px 5px gray;
+    border: none;
 }
 </style>
