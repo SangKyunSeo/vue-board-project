@@ -121,4 +121,15 @@ router.get('/myFreeInterestTotal', (req, res) => {
         }else console.log(err);
     })
 });
+
+router.post('/deleteBoard', (req, res) => {
+    maria.query(`DELETE FROM board WHERE board_num = ${req.body.boardNum} AND member_num = ${req.body.memberNum}`, (err, rows) => {
+        if(!err){
+            res.send(true);
+        }else {
+            console.log(err);
+            res.send(false);
+        }
+    })
+})
 module.exports = router;

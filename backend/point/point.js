@@ -36,7 +36,7 @@ router.post('/addPointReple', (req, res) => {
 });
 
 router.get('/getMyPointDetail', (req, res) => {
-    maria.query(`SELECT * FROM point WHERE member_num = ${req.query.memberNum}`, (err, rows) => {
+    maria.query(`SELECT * FROM point WHERE member_num = ${req.query.memberNum} ORDER BY point_date DESC`, (err, rows) => {
         if(!err){
             const myPointDetail = [];
 
@@ -57,7 +57,7 @@ router.get('/getMyPointDetail', (req, res) => {
 });
 
 router.get('/getMyGamePointDetail', (req, res) => {
-    maria.query(`SELECT * FROM game_point gp LEFT JOIN game g ON gp.game_num = g.game_num WHERE member_num = ${req.query.memberNum}`, (err, rows) => {
+    maria.query(`SELECT * FROM game_point gp LEFT JOIN game g ON gp.game_num = g.game_num WHERE member_num = ${req.query.memberNum} ORDER BY game_point_date DESC`, (err, rows) => {
         if(!err){
             const myGamePointDetail = [];
 

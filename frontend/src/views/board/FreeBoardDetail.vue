@@ -13,7 +13,7 @@
                 <span class="board-hit"> 조회수 {{ boardDetail.boardHit }} </span>
                 <span class="board-reple"> 댓글수 {{ repleTotalCount }}</span>
                 <button v-if="getUserNum === boardDetail.memberNum" class="board-update-button" @click="modalOpen">수정</button>
-                <button v-if="getUserNum === boardDetail.memberNum" class="board-delete-button">삭제</button>
+                <button v-if="getUserNum === boardDetail.memberNum" class="board-delete-button" @click="deleteBoard">삭제</button>
             </div>
             <div class="board-content">
                 {{ boardDetail.boardContent }}
@@ -61,6 +61,8 @@ import { ref, inject, onBeforeMount, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useUserStore } from '../../stores/user-store';
 import { storeToRefs } from 'pinia';
+import router from '@/router';
+
 
 const axios = inject('$axios');
 const route = new useRoute();
@@ -362,6 +364,35 @@ const updateReplyData = (data) => {
         getRepleTotalCount();
     }
 }
+
+// 게시글 삭제
+async function deleteBoard(event){
+    event.preventDefault();
+    if(getUserNum.value !== boardDetail.value.memberNum){
+        alert('본인이 작성한 글만 삭제 가능!');
+        return;
+    }
+
+    if(window.confirm('정말로 삭제하시겠습니까?')){
+        await axios.post('/api/board/deleteBoard',{
+            memberNum : getUserNum.value,
+            boardNum : boardDetail.value.boardNum
+        },{
+            method : 'POST',
+            header : {'Content-Type' : 'application/json'}
+        })
+        .then(res => {
+            if(res.data){
+                alert('삭제가 완료되었습니다.');
+                router.push('/');
+            }else console.log('삭제 통신 오류');
+        })
+        .catch(error => console.log(error));
+    }
+}
+
+
+
 onBeforeMount(() => {
     getBoardDetail();
 });
