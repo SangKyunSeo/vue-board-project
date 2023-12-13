@@ -4,7 +4,7 @@
         <h3 v-else>익명글</h3>
         <span v-if="boardCategory === 1" class="toggle-span" @click="toggle"> 익명글 보러가기 ➡</span>
         <span v-else class="toggle-span" @click="toggle"> 자유글 보러가기 ➡</span>
-        <div class="board-list-section">
+        <div v-if="boardList.length > 0" class="board-list-section">
             <table class="board-table">
                 <thead>
                     <tr v-if="boardCategory === 1">
@@ -15,7 +15,7 @@
                     </tr>
                 </thead>
                 <tbody v-if="boardCategory === 1">
-                    <tr v-for="(board, index) in boardList" :key="index" class="my-free-board-list">
+                    <tr v-for="(board, index) in boardList.slice((currentPage - 1) * persData, currentPage * persData)" :key="index" class="my-free-board-list">
                         <td>{{ board.boardNum }}</td>
                         <td><a @click="moveBoardDetail(board.boardNum)" class="board-title-click">{{ board.boardTitle }}</a></td>
                         <td>{{ String(board.boardRegdate).slice(0,10) }}</td>
@@ -27,7 +27,7 @@
                     </tr>
                 </tbody>
                 <tbody v-else>
-                    <tr v-for="(board, index) in boardList" :key="index" class="my-anony-board-list">
+                    <tr v-for="(board, index) in boardList.slice((currentPage - 1) * persData, currentPage * persData)" :key="index" class="my-anony-board-list">
                         <td>{{ board.boardNum }}</td>
                         <td v-if="todayRegistered(String(board.boardRegdate))" class="today-board" @click="moveBoardDetail(board.boardNum)">{{ board.boardTitle }}</td>
                         <td v-else class="not-today-board">{{ board.boardTitle }}</td>
@@ -39,6 +39,7 @@
                     </tr>
                 </tbody>
             </table>
+            <PageBody :list="boardList" :persData="persData" :persPage="persPage" @currentPage="getCurrentPage"/>
         </div>    
     </div>
 </template>
@@ -53,13 +54,18 @@
  *    - rework: 완료
  *    - uxWriting: 완료
  */
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import PageBody from './PageBody.vue';
 
 const freeHeader = ['글 번호', '제목', '작성일', '수정일', '조회수', '좋아요수','댓글수'];
 const anonyHeader = ['글 번호', '제목', '작성일', '수정일', '조회수', '반응수'];
 const router = new useRouter();
 const emit = defineEmits(['toggle']);
+
+const persData = ref(5);
+const persPage = ref(3);
+let currentPage = ref(1);
 
 const props = defineProps({
     boardList : {
@@ -107,6 +113,10 @@ function todayRegistered(boardRegdate){
 
     if(year === boardYear && month === boardMonth && day === boardDay) return true;
     return false;
+}
+
+const getCurrentPage = (data) => {
+    currentPage.value = data;
 }
 
 

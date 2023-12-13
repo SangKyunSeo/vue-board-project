@@ -122,6 +122,7 @@ function movePrevPage(){
     emit('currentPage', currentPage.value);
 }
 
+
 onMounted(() => {
     totalData.value = props.list.length;
     getTotalPage(totalData.value);

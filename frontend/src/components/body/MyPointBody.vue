@@ -14,7 +14,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(point, index) in myPointDetail" :key="index">
+                    <tr v-for="(point, index) in myPointDetail.slice((currentPage - 1) * persData , currentPage * persData)" :key="index">
                         <td>{{ point.pointNum }}</td>
                         <td v-if="point.pointCate === 1">자유글 작성</td>
                         <td v-if="point.pointCate === 2">익명글 작성</td>
@@ -26,6 +26,7 @@
                     </tr>
                 </tbody>
             </table>
+            <PageBody v-if="myPointDetail.length > 0" :list="myPointDetail" :persData="persData" :persPage="persPage" @currentPage="getCurrentPage"/>
         </div>
         <div class="my-game-point-detail-section">
             <h5>게임 포인트 내역</h5>
@@ -39,7 +40,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(point, index) in myGamePointDetail" :key="index">
+                    <tr v-for="(point, index) in myGamePointDetail.slice((gameCurrentPage - 1) * persData, gameCurrentPage * persData)" :key="index">
                         <td>{{ point.gamePointNum }}</td>
                         <td v-if="point.gamePointType === 1" class="game-point-acquire">+ {{ point.gamePoint }}</td>
                         <td v-else class="game-point-used">- {{ point.gamePoint }}</td>
@@ -48,6 +49,7 @@
                     </tr>
                 </tbody>
             </table>
+            <PageBody v-if="myGamePointDetail.length > 0" :list="myGamePointDetail" :persData="persData" :persPage="persPage" @currentPage="getGameCurrentPage"/>
         </div>
     </div>
 </template>
@@ -62,8 +64,14 @@
  *    - rework: 진행중
  *    - uxWriting: 진행중
  */
-import { defineEmits, defineProps } from 'vue';
+import { defineEmits, defineProps, ref } from 'vue';
+import PageBody from './PageBody.vue';
+
 const emit = defineEmits(['toggle']);
+const persData = ref(10);
+const persPage = ref(3);
+let currentPage = ref(1);
+let gameCurrentPage = ref(1);
 
 defineProps({
     myPointDetail : {
@@ -77,6 +85,14 @@ defineProps({
 // 마이페이지 메인으로 이동
 function toggle(){
     emit('toggle', 0);
+}
+
+const getCurrentPage = (data) => {
+    currentPage.value = data;
+}
+
+const getGameCurrentPage = (data) => {
+    gameCurrentPage.value = data;
 }
 
 </script>
