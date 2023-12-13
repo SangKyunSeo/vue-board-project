@@ -2,7 +2,7 @@
     <div class="free-board-section">
         <MainBodyHeader :msg="freeBoardHeader" />
         <div v-if="boardList.length > 0" class="free-board-article" >
-            <div :key="i" v-for="(board, i) in boardList" class="article" @click="moveDetail(board.boardNum)">
+            <div :key="i" v-for="(board, i) in boardList.slice((currentPage - 1) * persData , currentPage * persData )" class="article" @click="moveDetail(board.boardNum)">
                 <div class="board-header-section">
                     <div class="board-title">
                         {{ board.boardTitle }}
@@ -28,6 +28,7 @@
                     </div>
                 </div>
             </div>
+            <PageBody :list="boardList" :persPage="persPage" :persData="persData" @currentPage="getCurrentPage"/>
         </div>
         <div v-else class="free-board-article">
             표시할 게시물이 없습니다.
@@ -48,6 +49,7 @@
  */
 import { onMounted, ref, inject } from 'vue';
 import MainBodyHeader from '../components/header/MainBodyHeader.vue'
+import PageBody from '@/components/body/PageBody.vue';
 import { useRouter } from 'vue-router';
 
 const user = ref();
@@ -56,6 +58,9 @@ const freeBoardHeader = ref('자유 게시판');
 const router = new useRouter();
 
 let boardList = ref([]);
+let currentPage = ref(1);
+const persData =  ref(9);
+const persPage = ref(3);
 
 // 자유 게시글 상세페이지로 이동하기 위한 로그인한 사용자 정보 조회
 function getUserInfo(){
@@ -105,6 +110,10 @@ function setCategoryStyle(){
     document.getElementById('free_board').style.fontWeight = 'bold';
     document.getElementById('anony_board').style.fontWeight = '';
     document.getElementById('game_board').style.fontWeight = '';
+}
+
+const getCurrentPage = (data) => {
+    currentPage.value = data;
 }
 
 onMounted(() => {
