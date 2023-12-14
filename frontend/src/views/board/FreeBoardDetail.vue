@@ -18,6 +18,9 @@
             <div class="board-content">
                 {{ boardDetail.boardContent }}
             </div>
+            <div v-if="imageList.length > 0" class="image-file-section">    
+                <img v-for="(image, index) in imageList" :key="index" :src="image.fileUrl">
+            </div>
         </div>
         <div class="board-buttons">
             <div class="board-button-fav">
@@ -88,6 +91,8 @@ const today = year + '/' + month + '/' + day;
 const todayRepleCount = ref(0);
 const reSortList = ref([]);
 const parentReple = ref([]);
+const imageList = ref([]);
+
 
 // 자유글 조회 API
 async function getBoardDetail(){
@@ -98,7 +103,20 @@ async function getBoardDetail(){
     })
     .then(res => {
         boardDetail.value = res.data;
-        
+        getImageFiles();
+    })
+    .catch(error => console.log(error));
+}
+
+// 자유글 이미지 파일 조회 API
+async function getImageFiles(){
+    await axios.get('/api/board/getImageFiles',{
+        params: {
+            boardNum : boardNum
+        }
+    })
+    .then(res => {
+        imageList.value = res.data;
     })
     .catch(error => console.log(error));
 }
@@ -376,7 +394,8 @@ async function deleteBoard(event){
     if(window.confirm('정말로 삭제하시겠습니까?')){
         await axios.post('/api/board/deleteBoard',{
             memberNum : getUserNum.value,
-            boardNum : boardDetail.value.boardNum
+            boardNum : boardDetail.value.boardNum,
+            imageList : imageList.value
         },{
             method : 'POST',
             header : {'Content-Type' : 'application/json'}
@@ -453,7 +472,10 @@ onMounted(() => {
     text-align: left;
     font-size: 18px;
 }
-
+.image-file-section img{
+    width: 100%;
+    margin-top : 40px;
+}
 .board-buttons{
     width: 80%;
     margin: 30px auto;

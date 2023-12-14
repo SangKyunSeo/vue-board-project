@@ -12,15 +12,31 @@
                     <option>익명</option>
                 </select>
             </div>
+            <div class="file-section">
+                <label for="file">이미지 업로드</label>
+                <input type="file" name="imageFiles" class="input-file" id="file" @change="changeFiles">
+                <div class="file-content">
+                    <p class="file-name" v-for="(file, index) in fileNameArray" :key="index">
+                        <span>{{ file }}</span>
+                        <button type="button" @click="deleteFile(index)">삭제</button>
+                    </p>
+                </div>
+            </div>
             <div class="content-section">
                 <label for="boardContent">내용</label>
-                <textarea class="content-input" id="boardContent" v-model=boardContent maxlength="1000"></textarea>
+                <textarea class="content-input" id="boardContent" v-model="boardContent" maxlength="1000"></textarea>
             </div>
             <div class="form-button-section">
                 <button type="submit" id="submit">작성</button>
-                <button type="button" id="cancle">취소</button>
+                <button type="button" id="cancle" @click="writeCancel">취소</button>
             </div>
         </form>
+    </div>
+    <div>
+        <button @click="fileTest">test</button>
+    </div>
+    <div v-for="(image, index) in imageUrlList" :key="index">
+        <img :src="`${image.imageUrl}`">
     </div>
 </template>
 
@@ -49,10 +65,52 @@ const router = new useRouter();
 const route = new useRoute();
 const store = useUserStore();
 const { getUserPoint } = storeToRefs(store);
+const fileNameArray = ref([]);
+const fileList = ref([]);
+
+const imageUrlList = ref([]);
+
+//파일 업로드
+async function uploadFile(boardNum){
+
+    if(fileList.value.length > 0){
+        const formData = new FormData();
+        fileList.value.forEach((e) => {
+            formData.append('userFile', e);
+        });
+        formData.append('boardNum', boardNum);
+        await axios.post('/api/board/uploadFile', formData, {
+            header: {
+                'Content-Type' : 'multipart/form-data'
+            }
+        })
+        .then(res => {
+            if(res.data === 'success'){
+                console.log('데이터 삽입 성공');
+            }else{
+                console.log('데이터 통신 오류');
+            }
+        })
+        .catch(error => console.log(error));
+    }
+}
+
+
 
 // 글작성 API
 async function write(e){
     e.preventDefault();    
+
+    if(boardTitle.value === ''){
+        alert('제목을 입력하세요.');
+        return;
+    }
+
+    if(boardContent.value === ''){
+        alert('내용을 입력하세요.');
+        return;
+    }
+
     if(boardCategory.value === ''){
         alert('카테고리를 선택하세요');
         return;
@@ -65,32 +123,44 @@ async function write(e){
         alert('익명글 작성은 50포인트가 필요합니다!');
         return;
     }
-    
+
     const boardVO = {
         memberNum: route.query.memberNum,
         boardTitle: boardTitle.value,
         boardContent: boardContent.value,
         boardCategory: boardCategory.value === '자유' ? 1 : 2
     }
+
     await axios.post('/api/board/writeBoard', boardVO, {
         method: 'POST',
         header: {'Content-Type' : 'application/json'}
     })
     .then(res => {
-        if(res.data === 'success'){
+        if(res.data.msg === 'success'){
             if(boardCategory.value === '자유'){
                 // 자유게시판 포인트 차감
                 usePointForFree();
             }else{
                 // 익명게시판 포인트 차감
                 usePointForAnony();
-            }   
+            }
+            
+            // 파일 데이터 삽입
+            const boardNum = res.data.boardNum;
+            uploadFile(boardNum);
+            
+
             router.push('/');
         }else{
             alert('글 작성 오류');
         }
     })
     .catch(error => console.log(error));
+}
+
+// 글쓰기 취소
+function writeCancel(){
+    router.push('/');
 }
 
 // 자유글 작성시 포인트 차감
@@ -137,6 +207,29 @@ async function usePointForAnony(){
     .catch(error => console.log(error));
 }
 
+// 파일 첨부 시 파일명 출력
+function changeFiles(){
+    if(fileNameArray.value.includes(document.getElementById('file').value)){
+        alert('같은 파일이 존재합니다');
+        return;
+    }
+
+    if(fileNameArray.value.length >= 3){
+        alert('최대 3개 까지의 이미지만 첨부 가능합니다.');
+        return;
+    }
+
+    fileNameArray.value.push(document.getElementById('file').value);
+    fileList.value.push(document.getElementById('file').files[0]);
+}
+
+// 첨부된 파일 삭제
+function deleteFile(index){
+    fileNameArray.value.splice(index, 1);
+    fileList.value.splice(index, 1);
+}
+
+
 onMounted(() => {
     const user = localStorage.getItem('user');
     if(user === null || user.memberNum === '') router.push('/');
@@ -163,14 +256,33 @@ onMounted(() => {
     font-size: 24px;
 }
 
-.write-board-form-section div input, textarea{
+.title-input, textarea{
     width: 100%;
     height: 40px;
     border: 1px solid lightgrey;
     border-radius: 10px;
 }
 
-.write-board-form-section div input, textarea:focus{
+.file-section label{
+    display: inline-block;
+    height: 40px;
+    color: #999999;
+    cursor: pointer;
+    width: 20%;
+}
+.file-section label:hover{
+    color: black;
+}
+
+input[type="file"]{
+    width: 0;
+    height: 0;
+    border: 0;
+    position: absolute;
+    overflow: hidden;
+}
+
+.title-input, textarea:focus{
     outline: none;
 }
 
@@ -189,6 +301,11 @@ onMounted(() => {
 
 #cancle{
     margin-left: 20px;
+}
+
+.file-name{
+    display: flex;
+    justify-content: space-between;
 }
 
 </style>

@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+
+
 const app = express();
 const register = require('./Register/register');
 const login = require('./Login/login');
@@ -18,6 +20,8 @@ const member = require('./Member/member');
 maria.connect();
 
 app.use(cors());
+app.use(express.static('public'));
+
 app.use('/api/register', register);
 app.use('/api/login', login);
 app.use('/api/main', main);
@@ -30,6 +34,7 @@ app.use('/api/react', reaction);
 app.use('/api/search', search);
 app.use('/api/game', game);
 app.use('/api/member', member);
+
 
 app.listen(3000, () => {
     console.log('sever start');

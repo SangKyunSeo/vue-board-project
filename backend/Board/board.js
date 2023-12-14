@@ -1,8 +1,29 @@
 const router = require('express').Router();
 const bodyParser = require('body-parser');
 const maria = require('../database/connect/maria');
+const multer = require('multer');
+const uuid4 = require('uuid4');
+const path = require('path');
+const fs = require('fs');
+
+const upload = multer({
+    storage: multer.diskStorage({
+        filename(req, file, done){
+            const randomName = uuid4();
+            const ext = path.extname(file.originalname);
+            const fileName = randomName + ext;
+            done(null, fileName);
+        },
+        destination(req, file, done){
+            done(null, 'public/files');
+        }
+    })
+})
+
+const uploadMiddleware = upload.fields([{name : 'userFile'}, {name : 'boardNum'}]);
 
 router.use(bodyParser.json());
+
 router.post('/writeBoard', (req, res) => {
     const boardVO = {
         memberNum: req.body.memberNum,
@@ -13,14 +34,15 @@ router.post('/writeBoard', (req, res) => {
     }
 
     maria.query(`INSERT INTO board (board_title, board_content, board_hit, board_category, member_num) `
-     + `VALUES ('${boardVO.boardTitle}','${boardVO.boardContent}',${boardVO.boardHit},${boardVO.boardCategory},${boardVO.memberNum})`, (err, rows) => {
+     + `VALUES ('${boardVO.boardTitle}','${boardVO.boardContent}',${boardVO.boardHit},${boardVO.boardCategory},${boardVO.memberNum})`, (err, results, rows) => {
         if(!err){
-            res.send('success');
+            res.send({msg : 'success', boardNum : results.insertId});
             console.log('success');
+            console.log(results.insertId);
         }else{
             console.log(err);
         }
-     });
+    });
 });
 
 router.get('/freeBoardList', (req, res) => {
@@ -80,7 +102,6 @@ router.get('/anonyBoardList', (req, res) => {
 });
 
 router.get('/boardDetail', (req, res) => {
-    
     maria.query(`SELECT * FROM board b JOIN member m ON b.member_num = m.member_num WHERE board_num = ${req.query.boardNum}`, (err, rows) => {
         if(!err){
             const boardDetailVO = {
@@ -98,6 +119,21 @@ router.get('/boardDetail', (req, res) => {
             console.log(err);
         }
     })
+});
+
+router.get('/getImageFiles', (req, res) => {
+    maria.query(`SELECT * FROM board_file WHERE board_num = ${req.query.boardNum}`, (err, rows) => {
+        if(!err){
+            const imageListVO = [];
+            for(let row of rows){
+                imageListVO.push({
+                    fileName : row.file_name,
+                    fileUrl : 'http://localhost:3000/files/' + row.file_name
+                })
+            }
+            res.send(imageListVO);
+        }else console.log(err);
+    });
 });
 
 router.post('/addHit', (req, res) => {
@@ -123,6 +159,21 @@ router.get('/myFreeInterestTotal', (req, res) => {
 });
 
 router.post('/deleteBoard', (req, res) => {
+
+    req.body.imageList.forEach((e) => {
+
+        if(fs.existsSync('public/files/' + e.fileName)){
+            try{
+                fs.unlinkSync('public/files/' + e.fileName);
+            }catch(error){
+                console.log(error);
+            }
+        }else{
+            console.log('/files/' + e.fileName);
+        }
+    });
+
+
     maria.query(`DELETE FROM board WHERE board_num = ${req.body.boardNum} AND member_num = ${req.body.memberNum}`, (err, rows) => {
         if(!err){
             res.send(true);
@@ -131,5 +182,36 @@ router.post('/deleteBoard', (req, res) => {
             res.send(false);
         }
     })
+});
+
+
+
+// 파일 업로드
+router.post('/uploadFile', uploadMiddleware, (req, res) => {
+    console.log('파일' + req.files.userFile);
+    console.log('데이터 ' + req.body.boardNum);
+    const imageUrlArray = [];
+    req.files.userFile.forEach((e) => {
+        imageUrlArray.push({
+            imageUrl: 'http://localhost:3000/files/' + e.filename
+        })
+    });
+    let sql = 'INSERT INTO board_file (file_name, board_num) VALUES ?';
+    let values = [];
+    req.files.userFile.forEach((e) => {
+        values.push([
+            e.filename, req.body.boardNum
+        ])
+    });
+    maria.query(sql,[values], (err, rows) => {
+        if(!err){
+            console.log(values);
+            res.send('success');
+        }else {
+            res.send('error');
+            console.log(err);
+        }
+    })
+    
 })
 module.exports = router;
