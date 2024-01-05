@@ -1,9 +1,10 @@
 <template>
     <div class="game-board-section">
-        <MainBodyHeader :msg="gameBoardHeader"/>
-        <GameListBody v-if="gameList.length > 0" @gameNum="goGameDetail" :gameList="gameList"/>
+        <MainBodyHeader :msg="gameBoardHeader" />
+        <GameListBody v-if="gameList.length > 0" @gameNum="goGameDetail" :gameList="gameList" />
     </div>
-    <GameDetailModal v-if="gameModalOpen && Object.keys(gameDetail).length > 0" :gameDetail="gameDetail" @gameModalOpen="close"/>
+    <GameDetailModal v-if="gameModalOpen && Object.keys(gameDetail).length > 0" :gameDetail="gameDetail"
+        @gameModalOpen="close" />
 </template>
 <script setup>
 /**
@@ -35,92 +36,98 @@ const gameDetail = ref({});
 
 
 // 등록된 게임 리스트 조회 API
-async function getGameList(){
+async function getGameList() {
     axios.get('/api/game/getGameList')
-    .then(res => {
-        gameList.value = res.data;
-        console.log('게임 목록 : ' + gameList.value);
-    })
-    .catch(error => console.log(error));
+        .then(res => {
+            gameList.value = res.data;
+            console.log('게임 목록 : ' + gameList.value);
+        })
+        .catch(error => console.log(error));
 }
 
 // 게임 리스트에서 게임 클릭 시 게임 상세 모달창 띄우기
-const goGameDetail = (data) => {
-    if(getUserNum.value === '' || getUserNum.value === null){
+const goGameDetail = async (data) => {
+    if (getUserNum.value === '' || getUserNum.value === null) {
         alert('로그인 후 사용가능!');
         return;
-    }else{
-        if(checkPoint()){
-            gameModalOpen.value = window.confirm('게임에 참가하시겠습니까? (포인트가 차감됩니다.)');
-            gameNum.value = data;
-            if(gameModalOpen.value){
-                // 게임 상세 조회
-                getGameDetail(gameNum.value);
-                // 포인트 차감
-                if(gameNum.value === 1){
-                    calPoint(gameNum.value, 100);
-                }else if(gameNum.value === 2){
-                    calPoint(gameNum.value, 100);
-                }else if(gameNum.value === 3){
-                    calPoint(gameNum.value, 500);
-                }
-            }
-        }else{
-            alert('포인트가 부족하여 게임에 참여할 수 없습니다.');
-            return;
-        }
+    } else {
+        // 게임 상세 조회
+        gameNum.value = data;
+        await getGameDetail(gameNum.value);
     }
 }
 
 // 게임 참가 여부 확인
-function checkPoint(){
-    if(Number(getUserPoint.value) >= 100){
+function checkPoint() {
+    console.log(gameDetail.value.gameCost);
+    if (Number(getUserPoint.value) >= gameDetail.value.gameCost) {
         return true
     }
     return false;
 }
 
 // 게임 참가 포인트 차감
-async function calPoint(gameNum, gamePoint){
+async function calPoint(gameNum, gamePoint) {
+    console.log(gamePoint);
     // store에 반영
     store.setUserPoint(Number(getUserPoint.value) - gamePoint);
     // 로컬스토리지에 바로 반영
     localStorage.setItem('memberPoint', Number(getUserPoint.value));
     // DB 반영
-    await axios.post('/api/game/setGamePoint',{
-        memberNum : getUserNum.value,
-        gameNum : gameNum,
-        gamePoint : gamePoint,
-        gamePointType : 2
-    },{
+    await axios.post('/api/game/setGamePoint', {
+        memberNum: getUserNum.value,
+        gameNum: gameNum,
+        gamePoint: gamePoint,
+        gamePointType: 2
+    }, {
         method: 'POST',
-        header: {'Content-Type' : 'application/json'}
+        header: { 'Content-Type': 'application/json' }
     })
-    .then(res => {
-        if(res.data){
-            console.log('포인트 데이터 삽입 성공');
-        }else{
-            console.log('포인트 데이터 삽입 실패');
-        }
-    })
-    .catch(error => console.log(error));
-    
+        .then(res => {
+            if (res.data) {
+                console.log('포인트 데이터 삽입 성공');
+            } else {
+                console.log('포인트 데이터 삽입 실패');
+            }
+        })
+        .catch(error => console.log(error));
+
 }
 
-
-
 // 게임 상세 조회 API
-async function getGameDetail(gameNum){
+async function getGameDetail(gameNum) {
     axios.get('/api/game/getGameDetail', {
-        params : {
-            gameNum : gameNum
+        params: {
+            gameNum: gameNum
         }
     })
-    .then(res => {
-        gameDetail.value = res.data;
-        console.log(gameDetail.value);
-    })
-    .catch(error => console.log(error));
+        .then(res => {
+            gameDetail.value = res.data;
+            console.log(gameDetail.value);
+            if (checkPoint()) {
+                gameModalOpen.value = window.confirm('게임에 참가하시겠습니까? (포인트가 차감됩니다.)');
+
+                if (gameModalOpen.value) {
+                    // 게임 상세 조회
+                    // getGameDetail(gameNum.value);
+                    // 포인트 차감
+                    if (gameNum === 1) {
+                        console.log(gameDetail.value.gameCost)
+                        calPoint(gameNum.value, gameDetail.value.gameCost);
+                    } else if (gameNum === 2) {
+                        console.log(gameDetail.value.gameCost)
+                        calPoint(gameNum.value, gameDetail.value.gameCost);
+                    } else if (gameNum === 3) {
+                        console.log(gameDetail.value.gameCost)
+                        calPoint(gameNum.value, gameDetail.value.gameCost);
+                    }
+                }
+            } else {
+                alert('포인트가 부족하여 게임에 참여할 수 없습니다.');
+                return;
+            }
+        })
+        .catch(error => console.log(error));
 }
 
 // 게임 상세 모달창 닫기
@@ -138,7 +145,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.game-board-section{
+.game-board-section {
     width: 70%;
 }
 </style>

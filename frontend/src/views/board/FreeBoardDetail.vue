@@ -184,6 +184,9 @@ async function registFav(event) {
                 })
                 .catch(error => console.log(error));
         }
+    } else {
+        alert('자신의 글에는 좋아요를 등록할 수 없습니다!');
+        return;
     }
 }
 
