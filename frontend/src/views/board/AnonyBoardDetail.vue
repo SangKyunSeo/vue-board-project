@@ -73,12 +73,10 @@ async function getReaction() {
         .then(res => {
             console.log('반응 데이터 개수 : ' + res.data.length);
             if (res.data.length > 0) {
+                initMap();
                 for (let vo of res.data) {
                     if (vo.reactionType !== 0) {
-                        initMap();
                         reactionCountVO.value.set(vo.reactionType, vo.reactionCount);
-                    } else {
-                        initMap();
                     }
                 }
             }
