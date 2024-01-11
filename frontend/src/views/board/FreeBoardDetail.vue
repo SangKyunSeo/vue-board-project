@@ -45,7 +45,9 @@
             </div>
         </div>
         <hr>
-        <RepleList v-if="reSortList.length > 0" :repleList="reSortList" @updateReply="updateReplyData"
+        <!-- <RepleList v-if="reSortList.length > 0" :repleList="reSortList" @updateReply="updateReplyData"
+            :boardDetail="boardDetail" /> -->
+        <RepleList v-if="repleList.length > 0" :repleList="repleList" @updateReply="updateReplyData"
             :boardDetail="boardDetail" />
         <BoardUpdateModal v-if="updateModalOpen" :boardDetail="boardDetail" @updateModalClose="modalClose"
             @updatedBoardDetail="updatedData" />
@@ -94,8 +96,8 @@ const month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : date.ge
 const day = date.getDate < 10 ? '0' + date.getDate() : date.getDate();
 const today = year + '/' + month + '/' + day;
 const todayRepleCount = ref(0);
-const reSortList = ref([]);
-const parentReple = ref([]);
+// const reSortList = ref([]);
+// const parentReple = ref([]);
 const imageList = ref([]);
 
 
@@ -299,39 +301,40 @@ async function getRepleList() {
         }
     })
         .then(res => {
+            console.log(res.data);
             repleList.value = res.data;
-            initReSortList();
-            getParentReple();
-            for (let reple of parentReple.value) {
-                reSortList.value.push(reple);
-                reSort(reple, repleList.value);
-            }
+            // initReSortList();
+            // getParentReple();
+            // for (let reple of parentReple.value) {
+            //     reSortList.value.push(reple);
+            //     reSort(reple, repleList.value);
+            // }
         })
         .catch(error => console.log(error));
 }
 
 // 최상위 부모 댓글 배열 구하기
-function getParentReple() {
-    for (let reple of repleList.value) {
-        if (reple.parentId === 0) parentReple.value.push(reple);
-    }
-}
+// function getParentReple() {
+//     for (let reple of repleList.value) {
+//         if (reple.parentId === 0) parentReple.value.push(reple);
+//     }
+// }
 
-// DFS를 사용해 댓글 목록 재정렬
-function reSort(reple, repleList) {
-    for (let i = 0; i < repleList.length; i++) {
-        if (reple.repleNum === repleList[i].parentId) {
-            reSortList.value.push(repleList[i]);
-            //reSort(repleList[i], repleList.slice(i, repleList.length));
-            reSort(repleList[i], repleList);
-        }
-    }
-}
+// // DFS를 사용해 댓글 목록 재정렬
+// function reSort(reple, repleList) {
+//     for (let i = 0; i < repleList.length; i++) {
+//         if (reple.repleNum === repleList[i].parentId) {
+//             reSortList.value.push(repleList[i]);
+//             //reSort(repleList[i], repleList.slice(i, repleList.length));
+//             reSort(repleList[i], repleList);
+//         }
+//     }
+// }
 // 부모 댓글, 재정렬된 댓글 초기화
-function initReSortList() {
-    reSortList.value.length = 0;
-    parentReple.value.length = 0;
-}
+// function initReSortList() {
+//     reSortList.value.length = 0;
+//     parentReple.value.length = 0;
+// }
 
 // 포인트 20 누적
 async function addPointReple() {
@@ -384,9 +387,10 @@ const updatedData = (data) => {
 
 const updateReplyData = (data) => {
     if (data) {
-        initReSortList();
+        // initReSortList();
 
         getRepleList();
+        location.reload();
         getRepleTotalCount();
     }
 }
