@@ -113,13 +113,13 @@ async function getGameDetail(gameNum) {
                     // 포인트 차감
                     if (gameNum === 1) {
                         console.log(gameDetail.value.gameCost)
-                        calPoint(gameNum.value, gameDetail.value.gameCost);
+                        calPoint(gameNum, gameDetail.value.gameCost);
                     } else if (gameNum === 2) {
                         console.log(gameDetail.value.gameCost)
-                        calPoint(gameNum.value, gameDetail.value.gameCost);
+                        calPoint(gameNum, gameDetail.value.gameCost);
                     } else if (gameNum === 3) {
                         console.log(gameDetail.value.gameCost)
-                        calPoint(gameNum.value, gameDetail.value.gameCost);
+                        calPoint(gameNum, gameDetail.value.gameCost);
                     }
                 }
             } else {

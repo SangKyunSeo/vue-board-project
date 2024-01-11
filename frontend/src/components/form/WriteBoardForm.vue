@@ -3,7 +3,8 @@
         <form class="write-board-form" v-on:submit="write">
             <div class="title-section">
                 <label for="boardTitle">제목</label>
-                <input type="text" class="title-input" id="boardTitle" placeholder="제목을 작성해주세요(최대20자)" v-model="boardTitle" maxlength="20">
+                <input type="text" class="title-input" id="boardTitle" placeholder="제목을 작성해주세요(최대20자)" v-model="boardTitle"
+                    maxlength="20">
             </div>
             <div class="category-section">
                 <label>카테고리</label>
@@ -31,9 +32,6 @@
                 <button type="button" id="cancle" @click="writeCancel">취소</button>
             </div>
         </form>
-    </div>
-    <div>
-        <button @click="fileTest">test</button>
     </div>
     <div v-for="(image, index) in imageUrlList" :key="index">
         <img :src="`${image.imageUrl}`">
@@ -71,9 +69,9 @@ const fileList = ref([]);
 const imageUrlList = ref([]);
 
 //파일 업로드
-async function uploadFile(boardNum){
+async function uploadFile(boardNum) {
 
-    if(fileList.value.length > 0){
+    if (fileList.value.length > 0) {
         const formData = new FormData();
         fileList.value.forEach((e) => {
             formData.append('userFile', e);
@@ -81,45 +79,44 @@ async function uploadFile(boardNum){
         formData.append('boardNum', boardNum);
         await axios.post('/api/board/uploadFile', formData, {
             header: {
-                'Content-Type' : 'multipart/form-data'
+                'Content-Type': 'multipart/form-data'
             }
         })
-        .then(res => {
-            if(res.data === 'success'){
-                console.log('데이터 삽입 성공');
-            }else{
-                console.log('데이터 통신 오류');
-            }
-        })
-        .catch(error => console.log(error));
+            .then(res => {
+                if (res.data === 'success') {
+                    console.log('데이터 삽입 성공');
+                } else {
+                    console.log('데이터 통신 오류');
+                }
+            })
+            .catch(error => console.log(error));
     }
 }
 
 
 
 // 글작성 API
-async function write(e){
-    e.preventDefault();    
-
-    if(boardTitle.value === ''){
+async function write(e) {
+    e.preventDefault();
+    if (boardTitle.value === '') {
         alert('제목을 입력하세요.');
         return;
     }
 
-    if(boardContent.value === ''){
+    if (boardContent.value === '') {
         alert('내용을 입력하세요.');
         return;
     }
 
-    if(boardCategory.value === ''){
+    if (boardCategory.value === '') {
         alert('카테고리를 선택하세요');
         return;
     }
-    if(boardCategory.value === '자유' && getUserPoint < 30){
+    if (boardCategory.value === '자유' && getUserPoint.value < 30) {
         alert('자유글 작성은 30포인트가 필요합니다!');
         return;
     }
-    if(boardCategory.value === '익명' && getUserPoint < 50){
+    if (boardCategory.value === '익명' && getUserPoint.value < 50) {
         alert('익명글 작성은 50포인트가 필요합니다!');
         return;
     }
@@ -133,88 +130,88 @@ async function write(e){
 
     await axios.post('/api/board/writeBoard', boardVO, {
         method: 'POST',
-        header: {'Content-Type' : 'application/json'}
+        header: { 'Content-Type': 'application/json' }
     })
-    .then(res => {
-        if(res.data.msg === 'success'){
-            if(boardCategory.value === '자유'){
-                // 자유게시판 포인트 차감
-                usePointForFree();
-            }else{
-                // 익명게시판 포인트 차감
-                usePointForAnony();
-            }
-            
-            // 파일 데이터 삽입
-            const boardNum = res.data.boardNum;
-            uploadFile(boardNum);
-            
+        .then(res => {
+            if (res.data.msg === 'success') {
+                if (boardCategory.value === '자유') {
+                    // 자유게시판 포인트 차감
+                    usePointForFree();
+                } else {
+                    // 익명게시판 포인트 차감
+                    usePointForAnony();
+                }
 
-            router.push('/');
-        }else{
-            alert('글 작성 오류');
-        }
-    })
-    .catch(error => console.log(error));
+                // 파일 데이터 삽입
+                const boardNum = res.data.boardNum;
+                uploadFile(boardNum);
+
+
+                router.push('/');
+            } else {
+                alert('글 작성 오류');
+            }
+        })
+        .catch(error => console.log(error));
 }
 
 // 글쓰기 취소
-function writeCancel(){
+function writeCancel() {
     router.push('/');
 }
 
 // 자유글 작성시 포인트 차감
-async function usePointForFree(){
-    await axios.post('/api/point/useFreeBoard',{
-        memberNum : route.query.memberNum,
+async function usePointForFree() {
+    await axios.post('/api/point/useFreeBoard', {
+        memberNum: route.query.memberNum,
         pointCate: 1,
         pointScore: 30,
         pointType: 2
-    },{
+    }, {
         method: 'POST',
-        header: {'Content-Type': 'application/json'}
+        header: { 'Content-Type': 'application/json' }
     })
-    .then(res => {
-        if(res.data) {
-            console.log('자유 게시판 포인트 차감 성공');
-            store.setUserPoint(getUserPoint.value - 30);
-            localStorage.setItem('memberPoint', getUserPoint.value);
-        }
-        else console.log('자유 게시판 포인트 차감 오류');
-    })
-    .catch(error => console.log(error));
+        .then(res => {
+            if (res.data) {
+                console.log('자유 게시판 포인트 차감 성공');
+                store.setUserPoint(getUserPoint.value - 30);
+                localStorage.setItem('memberPoint', getUserPoint.value);
+            }
+            else console.log('자유 게시판 포인트 차감 오류');
+        })
+        .catch(error => console.log(error));
 }
 
 // 익명글 작성시 포인트 차감
-async function usePointForAnony(){
-    await axios.post('/api/point/useAnonyBoard',{
-        memberNum : route.query.memberNum,
+async function usePointForAnony() {
+    await axios.post('/api/point/useAnonyBoard', {
+        memberNum: route.query.memberNum,
         pointCate: 2,
         pointScore: 50,
         pointType: 2
-    },{
+    }, {
         method: 'POST',
-        header: {'Content-Type': 'application/json'}
+        header: { 'Content-Type': 'application/json' }
     })
-    .then(res => {
-        if(res.data) {
-            console.log('익명 게시판 포인트 차감 성공');
-            store.setUserPoint(getUserPoint.value - 50);
-            localStorage.setItem('memberPoint', getUserPoint.value);
-        }
-        else console.log('익명 게시판 포인트 차감 오류');
-    })
-    .catch(error => console.log(error));
+        .then(res => {
+            if (res.data) {
+                console.log('익명 게시판 포인트 차감 성공');
+                store.setUserPoint(getUserPoint.value - 50);
+                localStorage.setItem('memberPoint', getUserPoint.value);
+            }
+            else console.log('익명 게시판 포인트 차감 오류');
+        })
+        .catch(error => console.log(error));
 }
 
 // 파일 첨부 시 파일명 출력
-function changeFiles(){
-    if(fileNameArray.value.includes(document.getElementById('file').value)){
+function changeFiles() {
+    if (fileNameArray.value.includes(document.getElementById('file').value)) {
         alert('같은 파일이 존재합니다');
         return;
     }
 
-    if(fileNameArray.value.length >= 3){
+    if (fileNameArray.value.length >= 3) {
         alert('최대 3개 까지의 이미지만 첨부 가능합니다.');
         return;
     }
@@ -224,7 +221,7 @@ function changeFiles(){
 }
 
 // 첨부된 파일 삭제
-function deleteFile(index){
+function deleteFile(index) {
     fileNameArray.value.splice(index, 1);
     fileList.value.splice(index, 1);
 }
@@ -232,23 +229,23 @@ function deleteFile(index){
 
 onMounted(() => {
     const user = localStorage.getItem('user');
-    if(user === null || user.memberNum === '') router.push('/');
+    if (user === null || user.memberNum === '') router.push('/');
 });
 
 </script>
 
 <style scoped>
-.write-board-form-section{
+.write-board-form-section {
     width: 60%;
     margin: 0 auto;
-    
+
 }
 
-.write-board-form-section div{
+.write-board-form-section div {
     margin-top: 30px;
 }
 
-.write-board-form-section div label{
+.write-board-form-section div label {
     display: inline-block;
     width: 100%;
     text-align: left;
@@ -256,25 +253,27 @@ onMounted(() => {
     font-size: 24px;
 }
 
-.title-input, textarea{
+.title-input,
+textarea {
     width: 100%;
     height: 40px;
     border: 1px solid lightgrey;
     border-radius: 10px;
 }
 
-.file-section label{
+.file-section label {
     display: inline-block;
     height: 40px;
     color: #999999;
     cursor: pointer;
     width: 20%;
 }
-.file-section label:hover{
+
+.file-section label:hover {
     color: black;
 }
 
-input[type="file"]{
+input[type="file"] {
     width: 0;
     height: 0;
     border: 0;
@@ -282,30 +281,31 @@ input[type="file"]{
     overflow: hidden;
 }
 
-.title-input, textarea:focus{
+.title-input,
+textarea:focus {
     outline: none;
 }
 
-.category-section select{
-    margin-right: 100%;    
+.category-section select {
+    margin-right: 100%;
     height: 30px;
 }
 
-.title-input, .content-input{
+.title-input,
+.content-input {
     text-indent: 20px;
 }
 
-#submit{
+#submit {
     margin-right: 20px;
 }
 
-#cancle{
+#cancle {
     margin-left: 20px;
 }
 
-.file-name{
+.file-name {
     display: flex;
     justify-content: space-between;
 }
-
 </style>

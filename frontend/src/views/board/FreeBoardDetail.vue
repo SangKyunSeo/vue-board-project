@@ -291,7 +291,7 @@ async function registReple() {
 
 }
 
-// 댓글 목록 API
+// 댓글 목록 API (재귀 쿼리를 사용해 정렬해서 가져옴)
 async function getRepleList() {
     await axios.get('/api/reple/getRepleList', {
         params: {
