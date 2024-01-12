@@ -63,7 +63,6 @@ Vue3 문법에 익숙해지고 Javascript의 비동기적인 코드 구현을 �
      for (let i = 0; i < repleList.length; i++) {
          if (reple.repleNum === repleList[i].parentId) {
              reSortList.value.push(repleList[i]);
-             //reSort(repleList[i], repleList.slice(i, repleList.length));
              reSort(repleList[i], repleList);
          }
      }
