@@ -51,7 +51,7 @@ Vue3 문법에 익숙해지고 Javascript의 비동기적인 코드 구현을 �
 # 관련 코드
 
 ## DFS를 통한 재정렬
-```
+```javascript
  function getParentReple() {
      for (let reple of repleList.value) {
          if (reple.parentId === 0) parentReple.value.push(reple);
@@ -71,7 +71,7 @@ Vue3 문법에 익숙해지고 Javascript의 비동기적인 코드 구현을 �
 ```
 
 ## 재귀쿼리
-```
+```javascript
 WITH RECURSIVE CTE AS (
         SELECT board_num, r.member_num, reple_num, parent_id, reple_content, DATE_FORMAT(reple_regdate, '%Y-%m-%d') as reple_regdate, member_name, group_id, reple_depth, CONVERT(reple_num, char) AS path FROM reple r JOIN member m ON r.member_num = m.member_num WHERE parent_id = 0 AND board_num = ${req.query.boardNum}
         UNION ALL 
